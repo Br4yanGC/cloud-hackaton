@@ -7,15 +7,18 @@ const WEBSOCKET_BROADCAST_FUNCTION = process.env.WEBSOCKET_BROADCAST_FUNCTION ||
 // Notificar a los admins via WebSocket
 const notifyAdmins = async (message) => {
   try {
-    const payload = {
-      message,
-      targetRole: 'administrador'
+    // El handler broadcast espera un evento con body como string JSON
+    const event = {
+      body: JSON.stringify({
+        message,
+        targetRole: 'administrador'
+      })
     };
 
     await lambdaClient.send(new InvokeCommand({
       FunctionName: WEBSOCKET_BROADCAST_FUNCTION,
       InvocationType: 'Event', // Asíncrono
-      Payload: JSON.stringify(payload)
+      Payload: JSON.stringify(event)
     }));
 
     console.log('✅ Notificación enviada a admins via WebSocket');
@@ -28,15 +31,18 @@ const notifyAdmins = async (message) => {
 // Notificar a un usuario específico
 const notifyUser = async (userId, message) => {
   try {
-    const payload = {
-      message,
-      targetUserId: userId
+    // El handler broadcast espera un evento con body como string JSON
+    const event = {
+      body: JSON.stringify({
+        message,
+        targetUserId: userId
+      })
     };
 
     await lambdaClient.send(new InvokeCommand({
       FunctionName: WEBSOCKET_BROADCAST_FUNCTION,
       InvocationType: 'Event',
-      Payload: JSON.stringify(payload)
+      Payload: JSON.stringify(event)
     }));
 
     console.log(`✅ Notificación enviada a usuario ${userId} via WebSocket`);
