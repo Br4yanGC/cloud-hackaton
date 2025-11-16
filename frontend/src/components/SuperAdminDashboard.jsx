@@ -391,109 +391,100 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
       {/* Modal de detalles */}
       {showDetailModal && selectedIncident && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* Header del Modal */}
-            <div className="bg-utec-blue text-white p-6 rounded-t-xl flex justify-between items-center">
-              <h3 className="text-2xl font-bold">
-                Detalles del Incidente
-              </h3>
-              <button
-                onClick={closeDetailModal}
-                className="text-white hover:text-gray-200 text-2xl font-bold"
-              >
-                ✕
-              </button>
+            <div className="bg-utec-blue text-white p-6 rounded-t-xl">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="text-2xl font-bold mb-2">Detalle del Incidente</h3>
+                  <p className="text-blue-200">ID: {selectedIncident.id}</p>
+                </div>
+                <button
+                  onClick={closeDetailModal}
+                  className="text-white hover:text-gray-200 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Contenido del Modal */}
             <div className="p-6 space-y-6">
-              {/* ID del Incidente */}
-              <div>
-                <label className="text-sm font-semibold text-gray-600">ID del Incidente</label>
-                <p className="text-lg font-semibold text-blue-600 mt-1">{selectedIncident.id}</p>
-              </div>
-
-              {/* Grid de información básica */}
+              {/* Información General */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold text-gray-600">Tipo</label>
-                  <p className="text-gray-900 mt-1">{selectedIncident.type}</p>
+                  <p className="text-gray-900">{selectedIncident.type}</p>
                 </div>
                 <div>
                   <label className="text-sm font-semibold text-gray-600">Ubicación</label>
-                  <p className="text-gray-900 mt-1">{selectedIncident.location}</p>
+                  <p className="text-gray-900">{selectedIncident.location}</p>
                 </div>
                 <div>
                   <label className="text-sm font-semibold text-gray-600">Urgencia</label>
-                  <p className="mt-1">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getUrgencyColor(selectedIncident.urgency)}`}>
-                      {urgencyLevels.find(u => u.value === selectedIncident.urgency)?.label}
+                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getUrgencyColor(selectedIncident.urgency)}`}>
+                    {urgencyLevels.find(u => u.value === selectedIncident.urgency)?.label}
+                  </span>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-600">Estado Actual</label>
+                  <div>
+                    <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusData(selectedIncident.status)?.color}`}>
+                      {getStatusData(selectedIncident.status)?.icon} {getStatusData(selectedIncident.status)?.label}
                     </span>
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-600">Creado por</label>
+                  <p className="text-gray-900">
+                    {selectedIncident.createdByName || 'N/A'}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-semibold text-gray-600">Estado</label>
-                  <p className="mt-1">
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusData(selectedIncident.status)?.color}`}>
-                      {getStatusData(selectedIncident.status)?.icon} {getStatusData(selectedIncident.status)?.label}
-                    </span>
+                  <label className="text-sm font-semibold text-gray-600">Responsable</label>
+                  <p className="text-gray-900">
+                    {selectedIncident.assignedToName || <span className="text-gray-400 italic">Sin asignar</span>}
                   </p>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-600">Fecha de Reporte</label>
+                  <p className="text-gray-900">{new Date(selectedIncident.createdAt).toLocaleString('es-PE')}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-gray-600">Última Actualización</label>
+                  <p className="text-gray-900">{new Date(selectedIncident.updatedAt).toLocaleString('es-PE')}</p>
                 </div>
               </div>
 
               {/* Descripción */}
               <div>
                 <label className="text-sm font-semibold text-gray-600">Descripción</label>
-                <p className="text-gray-900 mt-1 p-3 bg-gray-50 rounded-lg">{selectedIncident.description}</p>
+                <p className="text-gray-900 mt-2 p-4 bg-gray-50 rounded-lg">{selectedIncident.description}</p>
               </div>
 
-              {/* Creado por */}
+              {/* Historial */}
               <div>
-                <label className="text-sm font-semibold text-gray-600">Creado por</label>
-                <p className="text-gray-900 mt-1">{selectedIncident.createdByName || 'N/A'} ({selectedIncident.createdByEmail || 'N/A'})</p>
-              </div>
-
-              {/* Responsable */}
-              <div>
-                <label className="text-sm font-semibold text-gray-600">Responsable</label>
-                <p className="text-gray-900 mt-1">{selectedIncident.assignedToName || 'Sin asignar'}</p>
-              </div>
-
-              {/* Fechas */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-semibold text-gray-600">Fecha de creación</label>
-                  <p className="text-gray-900 mt-1">{formatDate(selectedIncident.createdAt)}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-gray-600">Última actualización</label>
-                  <p className="text-gray-900 mt-1">{formatDate(selectedIncident.updatedAt)}</p>
-                </div>
-              </div>
-
-              {/* Historial de Cambios */}
-              {selectedIncident.history && selectedIncident.history.length > 0 && (
-                <div className="border-t pt-4">
-                  <label className="text-sm font-semibold text-gray-600 mb-3 block">Historial de Cambios</label>
-                  <div className="space-y-3">
-                    {selectedIncident.history.map((entry, index) => (
-                      <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                        <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                        <div className="flex-1">
-                          <p className="text-sm text-gray-900 font-medium">{entry.action}</p>
-                          <p className="text-xs text-gray-500">
-                            {formatDate(entry.timestamp)} - {entry.user}
-                          </p>
-                        </div>
+                <label className="text-sm font-semibold text-gray-600 mb-3 block">Historial de Seguimiento</label>
+                <div className="space-y-3">
+                  {selectedIncident.history.map((entry, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="w-2 h-2 mt-2 bg-blue-500 rounded-full flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <p className="text-sm text-gray-900 font-medium">{entry.action}</p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(entry.timestamp).toLocaleString('es-PE')} - {entry.user}
+                        </p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
 
             {/* Footer del Modal */}
-            <div className="bg-gray-50 p-6 rounded-b-xl flex justify-end gap-3">
+            <div className="bg-gray-50 p-6 rounded-b-xl flex justify-end">
               <button
                 onClick={closeDetailModal}
                 className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
