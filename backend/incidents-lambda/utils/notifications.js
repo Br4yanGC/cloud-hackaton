@@ -1,6 +1,7 @@
 const { LambdaClient, InvokeCommand } = require('@aws-sdk/client-lambda');
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, GetCommand } = require('@aws-sdk/lib-dynamodb');
+const { notifyUser } = require('./websocket');
 
 const lambdaClient = new LambdaClient({ region: 'us-east-1' });
 const dynamoClient = new DynamoDBClient({ region: 'us-east-1' });
@@ -107,13 +108,22 @@ async function notifyIncidentAssignment(adminId, incidentId, incidentDescription
     console.log(`Enviando notificaciones a ${admin.name} (${adminId})`);
 
     // Crear notificación in-app
-    await createInAppNotification(
+    const notification = await createInAppNotification(
       adminId,
       'Nuevo incidente asignado',
       `Se te ha asignado el incidente ${incidentId}: ${incidentDescription}`,
       'warning',
       { incidentId, action: 'assignment' }
     );
+
+    // Enviar notificación WebSocket en tiempo real
+    await notifyUser(adminId, {
+      type: 'NEW_NOTIFICATION',
+      notification: notification.body ? JSON.parse(notification.body) : null,
+      message: `Nueva notificación: Incidente ${incidentId} asignado`
+    });
+
+    console.log(`✅ Notificación WebSocket enviada a ${admin.name}`);
 
     // Enviar SMS si tiene número de teléfono
     if (admin.phoneNumber) {

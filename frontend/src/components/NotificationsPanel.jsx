@@ -1,19 +1,87 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { notificationsAPI } from '../services/notificationsAPI';
 import toast from 'react-hot-toast';
+
+const WS_URL = 'wss://d0eo5tae8b.execute-api.us-east-1.amazonaws.com/dev';
 
 function NotificationsPanel() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const wsRef = useRef(null);
+  const reconnectTimeoutRef = useRef(null);
 
   useEffect(() => {
     loadNotifications();
-    // Actualizar cada 30 segundos
-    const interval = setInterval(loadNotifications, 30000);
-    return () => clearInterval(interval);
+    connectWebSocket();
+    
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close();
+      }
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+    };
   }, []);
+
+  const connectWebSocket = () => {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    if (!token || !user.id) return;
+
+    try {
+      const ws = new WebSocket(`${WS_URL}?token=${token}&userId=${user.id}&role=${user.role}`);
+      
+      ws.onopen = () => {
+        console.log('WebSocket conectado para notificaciones');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          
+          // Escuchar cuando se asigna un incidente a este admin
+          if (data.type === 'INCIDENT_ASSIGNED' && data.incident) {
+            const assignedIncident = data.incident;
+            
+            // Verificar si el incidente fue asignado a este usuario
+            if (assignedIncident.assignedTo === user.id) {
+              // Recargar notificaciones para obtener la nueva
+              loadNotifications();
+              
+              // Mostrar toast
+              toast.success(`Nuevo incidente asignado: ${assignedIncident.trackingCode}`, {
+                duration: 5000,
+                icon: '📬',
+                style: {
+                  background: '#10b981',
+                  color: '#fff',
+                }
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error al procesar mensaje WebSocket:', error);
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('Error en WebSocket:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket desconectado, reintentando en 5s...');
+        reconnectTimeoutRef.current = setTimeout(connectWebSocket, 5000);
+      };
+
+      wsRef.current = ws;
+    } catch (error) {
+      console.error('Error al conectar WebSocket:', error);
+    }
+  };
 
   const loadNotifications = async () => {
     try {
