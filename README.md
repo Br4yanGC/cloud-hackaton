@@ -297,17 +297,46 @@ Usuarios adicionales disponibles en `frontend/src/mockData.js`
 ## 🏗️ Arquitectura de solucion (Serverless)
 ![](img/diagrama-arquitectura.png)
 
-## 🔌 APIs a Implementar
+## 🔌 APIs Implementadas
 
-Ver documentación completa en `frontend/README.md`
+### Auth API (Autenticación y Usuarios)
+**Base URL:** `https://9wasgnx72c.execute-api.us-east-1.amazonaws.com/dev`
 
-**Endpoints principales:**
-- `POST /api/incidents` - Crear incidente
-- `GET /api/incidents` - Listar incidentes
-- `PATCH /api/incidents/:id/assign` - Asignar incidente
-- `PATCH /api/incidents/:id/status` - Cambiar estado
-- `POST /api/admin/login` - Autenticación admin
-- `WS /ws` - WebSocket para tiempo real
+- `POST /auth/login` - Iniciar sesión
+- `POST /auth/register/public` - Registro público para estudiantes
+- `GET /auth/users` - Listar usuarios (admin/superadmin)
+- `GET /auth/users/{userId}` - Obtener usuario específico
+- `PUT /auth/users/{userId}` - Actualizar perfil de usuario
+- `DELETE /auth/users/{userId}` - Eliminar usuario (superadmin)
+
+### Incidents API (Gestión de Incidentes)
+**Base URL:** `https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com/dev`
+
+- `POST /incidents` - Crear incidente
+- `GET /incidents` - Listar todos los incidentes
+- `GET /incidents/{id}` - Obtener incidente específico
+- `PUT /incidents/{id}` - Actualizar incidente
+- `DELETE /incidents/{id}` - Eliminar incidente
+- `POST /incidents/{id}/assign` - Asignar incidente a admin
+- `PUT /incidents/{id}/status` - Cambiar estado de incidente
+- `POST /incidents/{id}/comments` - Agregar comentario
+
+### Notifications API (Notificaciones)
+**Base URL:** `https://p1lqlp2o5b.execute-api.us-east-1.amazonaws.com/dev`
+
+- `POST /notifications/email` - Enviar email (incidentes críticos)
+- `POST /notifications/subscribe` - Suscribir admin a notificaciones
+- `POST /notifications/unsubscribe` - Desuscribir admin
+- `GET /notifications/subscription-status` - Verificar estado de suscripción
+- `GET /notifications/in-app/{userId}` - Obtener notificaciones in-app
+- `PUT /notifications/in-app/{notificationId}/read` - Marcar como leída
+
+### WebSocket API (Tiempo Real)
+**WebSocket URL:** `wss://d0eo5tae8b.execute-api.us-east-1.amazonaws.com/dev`
+
+- `$connect` - Establecer conexión WebSocket
+- `$disconnect` - Cerrar conexión
+- `sendMessage` - Enviar mensaje (notificaciones en tiempo real)
 
 ## 📊 Tecnologías
 
