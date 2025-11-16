@@ -1,15 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockIncidents, incidentStatuses, urgencyLevels } from '../mockData';
+import { incidentStatuses, urgencyLevels } from '../mockData';
+import { apiRequest, API_CONFIG } from '../config';
 
 function StudentDashboard({ currentUser, onLogout }) {
   const navigate = useNavigate();
   
-  // Filtrar solo los incidentes creados por este estudiante
-  const myIncidents = mockIncidents.filter(incident => incident.createdBy === currentUser.id);
-  
+  const [myIncidents, setMyIncidents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+
+  // Cargar incidentes del estudiante
+  useEffect(() => {
+    loadMyIncidents();
+  }, []);
+
+  const loadMyIncidents = async () => {
+    try {
+      setLoading(true);
+      const response = await apiRequest(`${API_CONFIG.ENDPOINTS.INCIDENTS}?my=true`, {
+        method: 'GET'
+      }, true);
+      setMyIncidents(response.incidents || []);
+      setError('');
+    } catch (err) {
+      setError('Error al cargar incidentes');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Estadísticas
   const stats = {

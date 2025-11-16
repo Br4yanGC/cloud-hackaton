@@ -1,16 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockIncidents, incidentStatuses, urgencyLevels, incidentTypes, locations } from '../mockData';
+import { incidentStatuses, urgencyLevels, incidentTypes, locations } from '../mockData';
+import { apiRequest, API_CONFIG } from '../config';
 import AdminLayout from './AdminLayout';
 
 function AdminDashboard({ currentAdmin, onLogout }) {
   const navigate = useNavigate();
-  const [incidents, setIncidents] = useState(mockIncidents);
+  const [incidents, setIncidents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [filterUrgency, setFilterUrgency] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [showDetailModal, setShowDetailModal] = useState(false);
+
+  // Cargar incidentes
+  useEffect(() => {
+    loadIncidents();
+  }, []);
+
+  const loadIncidents = async () => {
+    try {
+      setLoading(true);
+      const response = await apiRequest(API_CONFIG.ENDPOINTS.INCIDENTS, {
+        method: 'GET'
+      }, true);
+      setIncidents(response.incidents || []);
+      setError('');
+    } catch (err) {
+      setError('Error al cargar incidentes');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filtrar incidentes
   const filteredIncidents = incidents.filter(incident => {
@@ -35,54 +59,43 @@ function AdminDashboard({ currentAdmin, onLogout }) {
   };
 
   // Asignar incidente al admin actual
-  const handleAssignToMe = (incidentId) => {
-    // En producción: PATCH /api/incidents/:id/assign
-    // Body: { assignedTo: currentAdmin.name }
-    
-    setIncidents(incidents.map(incident => {
-      if (incident.id === incidentId && !incident.assignedTo) {
-        return {
-          ...incident,
-          assignedTo: currentAdmin.name,
-          updatedAt: new Date().toISOString(),
-          history: [
-            ...incident.history,
-            {
-              action: `Asignado a ${currentAdmin.name}`,
-              timestamp: new Date().toISOString(),
-              user: currentAdmin.name
-            }
-          ]
-        };
-      }
-      return incident;
-    }));
+  const handleAssignToMe = async (incidentId) => {
+    try {
+      setLoading(true);
+      await apiRequest(
+        API_CONFIG.ENDPOINTS.ASSIGN_INCIDENT(incidentId),
+        {
+          method: 'PUT',
+          body: JSON.stringify({ assignTo: 'me' })
+        },
+        true
+      );
+      await loadIncidents();
+    } catch (err) {
+      setError('Error al asignar incidente: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Cambiar estado del incidente
-  const handleChangeStatus = (incidentId, newStatus) => {
-    // En producción: PATCH /api/incidents/:id/status
-    // Body: { status: newStatus, updatedBy: currentAdmin.name }
-    
-    setIncidents(incidents.map(incident => {
-      if (incident.id === incidentId) {
-        const statusLabel = incidentStatuses.find(s => s.value === newStatus)?.label;
-        return {
-          ...incident,
-          status: newStatus,
-          updatedAt: new Date().toISOString(),
-          history: [
-            ...incident.history,
-            {
-              action: `Estado cambiado a ${statusLabel}`,
-              timestamp: new Date().toISOString(),
-              user: currentAdmin.name
-            }
-          ]
-        };
-      }
-      return incident;
-    }));
+  const handleChangeStatus = async (incidentId, newStatus) => {
+    try {
+      setLoading(true);
+      await apiRequest(
+        API_CONFIG.ENDPOINTS.UPDATE_STATUS(incidentId),
+        {
+          method: 'PUT',
+          body: JSON.stringify({ status: newStatus })
+        },
+        true
+      );
+      await loadIncidents();
+    } catch (err) {
+      setError('Error al cambiar estado: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Abrir modal de detalles

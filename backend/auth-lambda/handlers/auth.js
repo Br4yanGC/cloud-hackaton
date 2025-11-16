@@ -163,8 +163,15 @@ module.exports.getProfile = async (event) => {
 // Lambda: Validate token (para otros microservicios)
 module.exports.validateToken = async (event) => {
   try {
-    const token = event.headers?.Authorization?.replace('Bearer ', '') ||
-                  event.headers?.authorization?.replace('Bearer ', '');
+    // Buscar token en headers o en body
+    let token = event.headers?.Authorization?.replace('Bearer ', '') ||
+                event.headers?.authorization?.replace('Bearer ', '');
+    
+    // Si no está en headers, buscar en body
+    if (!token && event.body) {
+      const body = JSON.parse(event.body);
+      token = body.token;
+    }
 
     if (!token) {
       return error(401, 'Token no proporcionado');

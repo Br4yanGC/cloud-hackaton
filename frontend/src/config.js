@@ -1,17 +1,25 @@
 // Configuración de API
 export const API_CONFIG = {
   BASE_URL: 'https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev',
+  INCIDENTS_URL: 'https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com/dev',
   ENDPOINTS: {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
     PROFILE: '/auth/me',
-    VALIDATE: '/auth/validate'
+    VALIDATE: '/auth/validate',
+    // Incidents
+    INCIDENTS: '/incidents',
+    INCIDENT_BY_ID: (id) => `/incidents/${id}`,
+    ASSIGN_INCIDENT: (id) => `/incidents/${id}/assign`,
+    UPDATE_STATUS: (id) => `/incidents/${id}/status`
   }
 };
 
 // Helper para hacer requests con autenticación
-export const apiRequest = async (endpoint, options = {}) => {
+export const apiRequest = async (endpoint, options = {}, useIncidentsAPI = false) => {
   const token = localStorage.getItem('token');
+  
+  const baseUrl = useIncidentsAPI ? API_CONFIG.INCIDENTS_URL : API_CONFIG.BASE_URL;
   
   const config = {
     ...options,
@@ -22,7 +30,7 @@ export const apiRequest = async (endpoint, options = {}) => {
     }
   };
 
-  const response = await fetch(`${API_CONFIG.BASE_URL}${endpoint}`, config);
+  const response = await fetch(`${baseUrl}${endpoint}`, config);
   const data = await response.json();
 
   if (!response.ok) {

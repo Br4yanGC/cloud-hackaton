@@ -1,0 +1,197 @@
+service: alertautec-incidents
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  iam:
+    role: arn:aws:iam::119327998857:role/LabRole
+  environment:
+    INCIDENTS_TABLE: ${self:service}-table-${self:provider.stage}
+    AUTH_API_URL: https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev
+
+functions:
+  # Crear incidente (estudiante/admin)
+  createIncident:
+    handler: handlers/incidents.create
+    description: Crear nuevo incidente
+    memorySize: 256
+    timeout: 10
+    events:
+      - http:
+          path: incidents
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  # Listar todos los incidentes (filtros opcionales)
+  listIncidents:
+    handler: handlers/incidents.list
+    description: Listar incidentes con filtros
+    memorySize: 256
+    timeout: 10
+    events:
+      - http:
+          path: incidents
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  # Obtener incidente por ID
+  getIncident:
+    handler: handlers/incidents.getById
+    description: Obtener detalles de un incidente
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: incidents/{id}
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  # Actualizar incidente
+  updateIncident:
+    handler: handlers/incidents.update
+    description: Actualizar incidente
+    memorySize: 256
+    timeout: 10
+    events:
+      - http:
+          path: incidents/{id}
+          method: put
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  # Asignar incidente a admin
+  assignIncident:
+    handler: handlers/incidents.assign
+    description: Asignar incidente a administrador
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: incidents/{id}/assign
+          method: put
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  # Cambiar estado de incidente
+  updateStatus:
+    handler: handlers/incidents.updateStatus
+    description: Cambiar estado del incidente
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: incidents/{id}/status
+          method: put
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+  # Eliminar incidente (admin solo)
+  deleteIncident:
+    handler: handlers/incidents.remove
+    description: Eliminar incidente
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: incidents/{id}
+          method: delete
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
+# Recursos de infraestructura
+resources:
+  Resources:
+    IncidentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.INCIDENTS_TABLE}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: createdBy
+            AttributeType: S
+          - AttributeName: assignedTo
+            AttributeType: S
+          - AttributeName: status
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          # Índice para buscar incidentes por creador
+          - IndexName: CreatedByIndex
+            KeySchema:
+              - AttributeName: createdBy
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          # Índice para buscar incidentes por admin asignado
+          - IndexName: AssignedToIndex
+            KeySchema:
+              - AttributeName: assignedTo
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+          # Índice para buscar por estado
+          - IndexName: StatusIndex
+            KeySchema:
+              - AttributeName: status
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+
+# Configuración de empaquetado
+package:
+  exclude:
+    - .git/**
+    - .env.example
+    - README.md
+    - .serverless/**
+  include:
+    - handlers/**
+    - utils/**
+    - node_modules/**

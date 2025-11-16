@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { incidentTypes, locations, urgencyLevels } from '../mockData';
+import { apiRequest, API_CONFIG } from '../config';
 
 function CreateIncident({ currentUser }) {
   const navigate = useNavigate();
@@ -12,28 +13,27 @@ function CreateIncident({ currentUser }) {
   });
   const [submitted, setSubmitted] = useState(false);
   const [trackingCode, setTrackingCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Simular generación de código de seguimiento
-    const code = `INC-2024-${String(Math.floor(Math.random() * 1000)).padStart(3, '0')}`;
-    setTrackingCode(code);
-    setSubmitted(true);
+    setError('');
+    setLoading(true);
 
-    // En producción, aquí iría la llamada a la API:
-    // POST /api/incidents
-    // Headers: Authorization: Bearer <token>
-    // Body: { ...formData, createdBy: currentUser.id }
-    // Response: { id, trackingCode }
-    
-    console.log('Nuevo incidente reportado:', {
-      ...formData,
-      createdBy: currentUser.id,
-      createdByName: currentUser.name,
-      trackingCode: code,
-      createdAt: new Date().toISOString()
-    });
+    try {
+      // Llamada real a la API
+      const response = await apiRequest(API_CONFIG.ENDPOINTS.INCIDENTS, {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      }, true); // true = usar incidents API
+
+      setTrackingCode(response.incident.trackingCode);
+      setSubmitted(true);
+    } catch (err) {
+      setError(err.message || 'Error al crear el incidente');
+      setLoading(false);
+    }
   };
 
   const handleReset = () => {
@@ -124,6 +124,16 @@ function CreateIncident({ currentUser }) {
 
           {/* Form */}
           <div className="bg-white rounded-xl shadow-lg p-8">
+            {/* Error Message */}
+            {error && (
+              <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
+                <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Tipo de Incidente */}
               <div>
@@ -205,10 +215,10 @@ function CreateIncident({ currentUser }) {
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={formData.description.length < 20}
+                disabled={formData.description.length < 20 || loading}
                 className="w-full bg-utec-orange text-white py-4 rounded-lg hover:bg-orange-600 transition-colors font-bold text-lg disabled:bg-gray-300 disabled:cursor-not-allowed shadow-lg"
               >
-                Enviar Reporte
+                {loading ? 'Enviando...' : 'Enviar Reporte'}
               </button>
             </form>
           </div>
