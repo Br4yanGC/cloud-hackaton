@@ -48,7 +48,7 @@ function Register() {
 
     try {
       // Llamada a la API de registro (público, sin autenticación)
-      await apiRequest('/dev/auth/register/public', {
+      await apiRequest('/auth/register/public', {
         method: 'POST',
         body: JSON.stringify({
           name: formData.name,
