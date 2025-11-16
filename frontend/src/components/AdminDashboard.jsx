@@ -26,9 +26,13 @@ function AdminDashboard({ currentAdmin, onLogout }) {
     }
 
     // Conectar WebSocket
-    const user = JSON.parse(localStorage.getItem('user'));
+    const userStr = localStorage.getItem('user');
+    console.log('📦 localStorage user (raw):', userStr);
+    
+    const user = userStr ? JSON.parse(userStr) : null;
     console.log('👤 Usuario desde localStorage:', user);
-    if (user) {
+    
+    if (user && user.id && user.role) {
       console.log('🔌 Iniciando conexión WebSocket para usuario:', user.id, 'role:', user.role);
       websocketManager.connect(user.id, user.role);
 
@@ -59,6 +63,9 @@ function AdminDashboard({ currentAdmin, onLogout }) {
         unsubscribeAssigned();
         websocketManager.disconnect();
       };
+    } else {
+      console.error('❌ No se puede conectar WebSocket: usuario no válido en localStorage');
+      console.error('❌ Por favor, cierra sesión y vuelve a iniciar sesión');
     }
   }, []);
 
