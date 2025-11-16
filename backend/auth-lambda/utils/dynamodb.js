@@ -91,10 +91,47 @@ async function listAdministrators() {
   return result.Items || [];
 }
 
+// Actualizar usuario
+async function updateUser(id, updates) {
+  const { UpdateCommand } = require('@aws-sdk/lib-dynamodb');
+  
+  // Construir la expresión de actualización dinámicamente
+  const updateExpressions = [];
+  const expressionAttributeNames = {};
+  const expressionAttributeValues = {};
+  
+  Object.keys(updates).forEach((key, index) => {
+    const placeholder = `#field${index}`;
+    const valuePlaceholder = `:val${index}`;
+    
+    updateExpressions.push(`${placeholder} = ${valuePlaceholder}`);
+    expressionAttributeNames[placeholder] = key;
+    expressionAttributeValues[valuePlaceholder] = updates[key];
+  });
+  
+  // Agregar updatedAt
+  updateExpressions.push('#updatedAt = :updatedAt');
+  expressionAttributeNames['#updatedAt'] = 'updatedAt';
+  expressionAttributeValues[':updatedAt'] = new Date().toISOString();
+  
+  const command = new UpdateCommand({
+    TableName: USERS_TABLE,
+    Key: { id },
+    UpdateExpression: `SET ${updateExpressions.join(', ')}`,
+    ExpressionAttributeNames: expressionAttributeNames,
+    ExpressionAttributeValues: expressionAttributeValues,
+    ReturnValues: 'ALL_NEW'
+  });
+  
+  const response = await docClient.send(command);
+  return response.Attributes;
+}
+
 module.exports = {
   createUser,
   getUser,
   getUserByEmail,
   updateLastLogin,
-  listAdministrators
+  listAdministrators,
+  updateUser
 };

@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getUser, createUser, getUserByEmail, listAdministrators } = require('../utils/dynamodb');
+const { getUser, createUser, getUserByEmail, listAdministrators, updateUser } = require('../utils/dynamodb');
 const { success, error, validate } = require('../utils/response');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -256,5 +256,67 @@ module.exports.listAdmins = async (event) => {
   } catch (err) {
     console.error('List admins error:', err);
     return error(500, 'Error al listar administradores', err.message);
+  }
+};
+
+// Lambda: Actualizar usuario (solo superadmin puede editar admins)
+module.exports.updateUserProfile = async (event) => {
+  try {
+    const token = event.headers.Authorization?.replace('Bearer ', '');
+    
+    if (!token) {
+      return error(401, 'No autorizado');
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return error(403, 'Token inválido');
+    }
+
+    const { userId } = event.pathParameters;
+    const body = JSON.parse(event.body);
+    const { name, email, email_notification } = body;
+
+    // Verificar que sea superadmin o el mismo usuario
+    if (decoded.role !== 'superadmin' && decoded.id !== userId) {
+      return error(403, 'No tienes permiso para editar este usuario');
+    }
+
+    // Validar que el usuario existe
+    const existingUser = await getUser(userId);
+    if (!existingUser) {
+      return error(404, 'Usuario no encontrado');
+    }
+
+    // Preparar actualizaciones
+    const updates = {};
+    if (name !== undefined) updates.name = name;
+    if (email_notification !== undefined) updates.email_notification = email_notification;
+    
+    // Si cambia el email, verificar que no esté en uso
+    if (email !== undefined && email !== existingUser.email) {
+      const emailExists = await getUserByEmail(email);
+      if (emailExists) {
+        return error(409, 'El email ya está en uso');
+      }
+      updates.email = email;
+    }
+
+    // Actualizar usuario
+    const updatedUser = await updateUser(userId, updates);
+
+    // Remover información sensible
+    const { passwordHash, ...userResponse } = updatedUser;
+
+    return success({
+      message: 'Usuario actualizado exitosamente',
+      user: userResponse
+    });
+
+  } catch (err) {
+    console.error('Update user error:', err);
+    return error(500, 'Error al actualizar usuario', err.message);
   }
 };

@@ -2,12 +2,20 @@ import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 
 const NOTIFICATIONS_API = 'https://9m8tqise7g.execute-api.us-east-1.amazonaws.com/dev';
+const AUTH_API = 'https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev';
 
 export default function EmailSubscriptionsPanel() {
   const [admins, setAdmins] = useState([]);
   const [summary, setSummary] = useState({ total: 0, confirmed: 0, pending: 0, notSubscribed: 0 });
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingAdmin, setEditingAdmin] = useState(null);
+  const [editForm, setEditForm] = useState({
+    name: '',
+    email: '',
+    email_notification: ''
+  });
 
   useEffect(() => {
     loadSubscriptions();
@@ -96,6 +104,44 @@ export default function EmailSubscriptionsPanel() {
     } catch (error) {
       console.error('Error unsubscribing:', error);
       toast.error('Error al cancelar suscripción');
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleEditAdmin = (admin) => {
+    setEditingAdmin(admin);
+    setEditForm({
+      name: admin.name,
+      email: admin.email,
+      email_notification: admin.email_notification || admin.email
+    });
+    setShowEditModal(true);
+  };
+
+  const handleSaveEdit = async () => {
+    try {
+      setActionLoading('edit');
+      const token = localStorage.getItem('token');
+
+      const response = await fetch(`${AUTH_API}/auth/users/${editingAdmin.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(editForm)
+      });
+
+      if (!response.ok) throw new Error('Error al actualizar usuario');
+
+      toast.success('Usuario actualizado exitosamente');
+      setShowEditModal(false);
+      setEditingAdmin(null);
+      await loadSubscriptions();
+    } catch (error) {
+      console.error('Error updating admin:', error);
+      toast.error('Error al actualizar usuario');
     } finally {
       setActionLoading(null);
     }
@@ -207,24 +253,33 @@ export default function EmailSubscriptionsPanel() {
                   {getStatusBadge(admin.subscriptionStatus)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  {admin.subscriptionStatus === 'not_subscribed' || admin.subscriptionStatus === 'pending' ? (
+                  <div className="flex justify-end gap-2">
                     <button
-                      onClick={() => handleSubscribe(admin)}
-                      disabled={actionLoading === admin.email}
-                      className="text-blue-600 hover:text-blue-900 disabled:opacity-50"
+                      onClick={() => handleEditAdmin(admin)}
+                      className="text-indigo-600 hover:text-indigo-900"
+                      title="Editar usuario"
                     >
-                      {actionLoading === admin.email ? 'Enviando...' : 
-                       admin.subscriptionStatus === 'pending' ? 'Reenviar Invitación' : 'Enviar Invitación'}
+                      ✏️ Editar
                     </button>
-                  ) : (
-                    <button
-                      onClick={() => handleUnsubscribe(admin.subscriptionArn, admin.name)}
-                      disabled={actionLoading === admin.subscriptionArn}
-                      className="text-red-600 hover:text-red-900 disabled:opacity-50"
-                    >
-                      {actionLoading === admin.subscriptionArn ? 'Cancelando...' : 'Desuscribir'}
-                    </button>
-                  )}
+                    {admin.subscriptionStatus === 'not_subscribed' || admin.subscriptionStatus === 'pending' ? (
+                      <button
+                        onClick={() => handleSubscribe(admin)}
+                        disabled={actionLoading === admin.email}
+                        className="text-blue-600 hover:text-blue-900 disabled:opacity-50"
+                      >
+                        {actionLoading === admin.email ? 'Enviando...' : 
+                         admin.subscriptionStatus === 'pending' ? 'Reenviar' : 'Suscribir'}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleUnsubscribe(admin.subscriptionArn, admin.name)}
+                        disabled={actionLoading === admin.subscriptionArn}
+                        className="text-red-600 hover:text-red-900 disabled:opacity-50"
+                      >
+                        {actionLoading === admin.subscriptionArn ? 'Cancelando...' : 'Desuscribir'}
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -247,6 +302,74 @@ export default function EmailSubscriptionsPanel() {
           🔄 Actualizar
         </button>
       </div>
+
+      {/* Modal de edición */}
+      {showEditModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-lg font-semibold mb-4">Editar Administrador</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email (Login)
+                </label>
+                <input
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email (Notificaciones)
+                </label>
+                <input
+                  type="email"
+                  value={editForm.email_notification}
+                  onChange={(e) => setEditForm({ ...editForm, email_notification: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Email para recibir alertas"
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 mt-6">
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingAdmin(null);
+                }}
+                disabled={actionLoading === 'edit'}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                disabled={actionLoading === 'edit'}
+                className="px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              >
+                {actionLoading === 'edit' ? 'Guardando...' : 'Guardar'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
