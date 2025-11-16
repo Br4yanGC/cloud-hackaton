@@ -30,9 +30,9 @@ module.exports.create = async (event) => {
       return error(400, 'Campos requeridos: type, location, description, urgency');
     }
 
-    const validUrgencies = ['baja', 'media', 'alta'];
+    const validUrgencies = ['baja', 'media', 'alta', 'critica'];
     if (!validUrgencies.includes(urgency)) {
-      return error(400, 'Urgencia debe ser: baja, media o alta');
+      return error(400, 'Urgencia debe ser: baja, media, alta o critica');
     }
 
     // Generar ID y código de seguimiento
