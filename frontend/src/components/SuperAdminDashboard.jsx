@@ -366,7 +366,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
                             >
                               Ver
                             </button>
-                            {(incident.status === 'pendiente' || incident.status === 'en-proceso') && (
+                            {(incident.assignedTo === 'unassigned' || !incident.assignedTo) && (
                               <button
                                 onClick={() => handleAssignClick(incident)}
                                 className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-md hover:bg-green-700 transition-colors"
