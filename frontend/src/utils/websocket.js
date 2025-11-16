@@ -1,5 +1,7 @@
 // WebSocket connection manager for real-time notifications
-const WEBSOCKET_URL = 'wss://d0eo5tae8b.execute-api.us-east-1.amazonaws.com/dev';
+import { API_CONFIG } from '../config';
+
+const WEBSOCKET_URL = API_CONFIG.WEBSOCKET_URL;
 
 class WebSocketManager {
   constructor() {
