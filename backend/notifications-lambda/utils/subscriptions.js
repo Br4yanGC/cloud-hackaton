@@ -41,9 +41,12 @@ async function getAdminsWithSubscriptionStatus() {
     const subscribedEmails = new Map();
     subscriptions.forEach(sub => {
       if (sub.Protocol === 'email') {
+        // SNS marca como 'PendingConfirmation' cuando no está confirmado
+        const isPending = sub.SubscriptionArn === 'PendingConfirmation' || 
+                         sub.SubscriptionArn.includes('PendingConfirmation');
         subscribedEmails.set(sub.Endpoint, {
           arn: sub.SubscriptionArn,
-          status: sub.SubscriptionArn === 'PendingConfirmation' ? 'pending' : 'confirmed'
+          status: isPending ? 'pending' : 'confirmed'
         });
       }
     });
