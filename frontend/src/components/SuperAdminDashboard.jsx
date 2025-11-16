@@ -42,7 +42,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
       const unsubscribeNewIncident = websocketManager.on('NEW_INCIDENT', (data) => {
         console.log('🆕 Nuevo incidente recibido:', data);
         setIncidents(prevIncidents => [data.incident, ...prevIncidents]);
-        toast.success(`Nuevo incidente: ${data.incident.trackingCode}`, {
+        toast.success(`Nuevo incidente: ${data.incident.id}`, {
           icon: '🚨',
         });
         showNotification('Nuevo incidente', data.message);
@@ -58,8 +58,8 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
             inc.id === data.incident.id ? data.incident : inc
           )
         );
-        toast.info(`${data.incident.trackingCode} asignado`, {
-          icon: '👤',
+        toast.success(`Incidente ${data.incident.id} asignado a ${data.incident.assignedToName}`, {
+          icon: '✅',
         });
         showNotification('Incidente asignado', data.message);
         // Recargar cargas de trabajo
@@ -74,7 +74,8 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
             inc.id === data.incident.id ? data.incident : inc
           )
         );
-        toast.success(`${data.incident.trackingCode} - ${data.incident.status}`, {
+        const statusData = getStatusData(data.incident.status);
+        toast.success(`${data.incident.id} - ${statusData?.label || data.incident.status}`, {
           icon: '✅',
         });
         // Recargar cargas de trabajo
@@ -192,7 +193,8 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
     const matchesStatus = filterStatus === 'all' || incident.status === filterStatus;
     const matchesUrgency = filterUrgency === 'all' || incident.urgency === filterUrgency;
     const matchesSearch = !searchTerm || 
-      incident.trackingCode?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      incident.id?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      incident.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       incident.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       incident.location?.toLowerCase().includes(searchTerm.toLowerCase());
     
