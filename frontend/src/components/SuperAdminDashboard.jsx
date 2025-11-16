@@ -401,14 +401,10 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               </table>
             </div>
           )}
-                </tbody>
-              </table>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Modal de detalles */}
+      {/* Modal de detalles */}      {/* Modal de detalles */}
       {showDetailModal && selectedIncident && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
