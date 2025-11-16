@@ -395,9 +395,20 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
           </div>
         </div>
       </div>
+      ) : (
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Gestión de Suscripciones por Email</h2>
+            <p className="text-gray-600 mt-2">
+              Administra las suscripciones de los administradores para recibir notificaciones por email cuando se registren incidentes críticos.
+            </p>
+          </div>
+          <EmailSubscriptionsPanel />
+        </div>
+      )}
 
-      {/* Modal de detalles */}
-      {showDetailModal && selectedIncident && (
+        {/* Modal de detalles */}
+        {showDetailModal && selectedIncident && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             {/* Header del Modal */}
@@ -570,17 +581,6 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               </button>
             </div>
           </div>
-        </div>
-      )}
-      ) : (
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Gestión de Suscripciones por Email</h2>
-            <p className="text-gray-600 mt-2">
-              Administra las suscripciones de los administradores para recibir notificaciones por email cuando se registren incidentes críticos.
-            </p>
-          </div>
-          <EmailSubscriptionsPanel />
         </div>
       )}
     </SuperAdminLayout>
