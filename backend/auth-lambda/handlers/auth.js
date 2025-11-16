@@ -77,6 +77,67 @@ module.exports.register = async (event) => {
   }
 };
 
+// Lambda: Public Register (solo para estudiantes)
+module.exports.registerPublic = async (event) => {
+  try {
+    const body = JSON.parse(event.body);
+    const { email, password, name, code, phoneNumber } = body;
+
+    // Validación básica
+    if (!email || !password || !name) {
+      return error(400, 'Email, password y name son requeridos');
+    }
+
+    // Solo permitir correos de UTEC
+    if (!email.endsWith('@utec.edu.pe')) {
+      return error(400, 'Solo se permiten correos institucionales de UTEC (@utec.edu.pe)');
+    }
+
+    if (password.length < 6) {
+      return error(400, 'La contraseña debe tener al menos 6 caracteres');
+    }
+
+    // Validar formato de teléfono si se proporciona
+    if (phoneNumber && !phoneNumber.startsWith('+51')) {
+      return error(400, 'El número de teléfono debe comenzar con +51');
+    }
+
+    // Verificar si el email ya existe
+    const existingUser = await getUserByEmail(email);
+    if (existingUser) {
+      return error(409, 'El email ya está registrado');
+    }
+
+    // Hash de contraseña
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Crear usuario SIEMPRE como estudiante
+    const user = await createUser({
+      email,
+      passwordHash,
+      name,
+      role: 'estudiante', // Forzar rol estudiante
+      code: code || null,
+      phoneNumber: phoneNumber || null,
+      email_notification: email // Usar mismo email para notificaciones
+    });
+
+    console.log('✅ Estudiante registrado:', user.email);
+
+    // Respuesta sin password hash (NO devolver token, requiere login)
+    const { passwordHash: _, ...userResponse } = user;
+
+    return success({
+      message: 'Cuenta de estudiante creada exitosamente. Por favor inicia sesión.',
+      user: userResponse
+    }, 201);
+
+  } catch (err) {
+    console.error('Public register error:', err);
+    return error(500, 'Error al registrar usuario', err.message);
+  }
+};
+
 // Lambda: Login
 module.exports.login = async (event) => {
   try {

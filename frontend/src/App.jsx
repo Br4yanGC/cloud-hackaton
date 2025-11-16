@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Login from './components/Login';
+import Register from './components/Register';
 import AdminDashboard from './components/AdminDashboard';
 import SuperAdminDashboard from './components/SuperAdminDashboard';
 import MyAssignments from './components/MyAssignments';
@@ -52,10 +53,10 @@ function App() {
   // Protección de rutas según rol
   const ProtectedRoute = ({ children, allowedRole }) => {
     if (!isAuthenticated) {
-      return <Navigate to="/" />;
+      return <Navigate to="/login" />;
     }
     if (allowedRole && currentUser?.role !== allowedRole) {
-      return <Navigate to="/" />;
+      return <Navigate to="/login" />;
     }
     return children;
   };
@@ -113,7 +114,29 @@ function App() {
                 <Navigate to="/student/dashboard" />
               )
             ) : (
+              <Navigate to="/login" />
+            )
+          } 
+        />
+
+        {/* Login y Registro públicos */}
+        <Route 
+          path="/login" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
               <Login onLogin={handleLogin} />
+            )
+          } 
+        />
+        <Route 
+          path="/register" 
+          element={
+            isAuthenticated ? (
+              <Navigate to="/" />
+            ) : (
+              <Register />
             )
           } 
         />
@@ -173,7 +196,7 @@ function App() {
         />
 
         {/* Ruta 404 */}
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { apiRequest, API_CONFIG } from '../config';
 
 function Login({ onLogin }) {
@@ -135,6 +135,16 @@ function Login({ onLogin }) {
               )}
             </button>
           </form>
+
+          {/* Register Link */}
+          <div className="mt-6 text-center">
+            <p className="text-gray-600 text-sm">
+              ¿Eres estudiante y no tienes cuenta?{' '}
+              <Link to="/register" className="text-utec-blue font-semibold hover:underline">
+                Regístrate aquí
+              </Link>
+            </p>
+          </div>
 
           {/* Demo Credentials */}
           <div className="mt-6 space-y-3">

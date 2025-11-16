@@ -36,6 +36,21 @@ functions:
     timeout: 10
     memorySize: 256
 
+  registerPublic:
+    handler: handlers/auth.registerPublic
+    description: Public registration for students
+    events:
+      - http:
+          path: auth/register/public
+          method: post
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+    timeout: 10
+    memorySize: 256
+
   login:
     handler: handlers/auth.login
     description: User login

@@ -19,6 +19,7 @@ export const API_CONFIG = {
 // Helper para hacer requests con autenticación
 export const apiRequest = async (endpoint, options = {}, useIncidentsAPI = false) => {
   const token = localStorage.getItem('token');
+  const skipAuth = options.skipAuth || false;
   
   const baseUrl = useIncidentsAPI ? API_CONFIG.INCIDENTS_URL : API_CONFIG.BASE_URL;
   
@@ -26,10 +27,13 @@ export const apiRequest = async (endpoint, options = {}, useIncidentsAPI = false
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` }),
+      ...(token && !skipAuth && { 'Authorization': `Bearer ${token}` }),
       ...options.headers
     }
   };
+
+  // Remove skipAuth from options before fetch
+  delete config.skipAuth;
 
   const response = await fetch(`${baseUrl}${endpoint}`, config);
   const data = await response.json();
