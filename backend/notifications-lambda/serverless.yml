@@ -37,11 +37,35 @@ functions:
           method: put
           cors: true
   
-  sendSMS:
-    handler: handlers/notifications.sendSMS
+  sendEmail:
+    handler: handlers/notifications.sendEmail
     events:
       - http:
-          path: /notifications/sms
+          path: /notifications/email
+          method: post
+          cors: true
+  
+  listSubscriptions:
+    handler: handlers/notifications.listSubscriptions
+    events:
+      - http:
+          path: /notifications/subscriptions
+          method: get
+          cors: true
+  
+  subscribeEmail:
+    handler: handlers/notifications.subscribeEmail
+    events:
+      - http:
+          path: /notifications/subscribe
+          method: post
+          cors: true
+  
+  unsubscribeEmail:
+    handler: handlers/notifications.unsubscribe
+    events:
+      - http:
+          path: /notifications/unsubscribe
           method: post
           cors: true
 

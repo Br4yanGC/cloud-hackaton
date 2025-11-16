@@ -6,13 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["notifications", "sms", "sns", "dynamodb"],
+  "keywords": [
+    "notifications",
+    "sms",
+    "sns",
+    "dynamodb"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.450.0",
-    "@aws-sdk/lib-dynamodb": "^3.450.0",
+    "@aws-sdk/client-ses": "^3.932.0",
     "@aws-sdk/client-sns": "^3.450.0",
+    "@aws-sdk/lib-dynamodb": "^3.450.0",
     "uuid": "^9.0.0"
   }
 }

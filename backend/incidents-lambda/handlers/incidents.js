@@ -306,11 +306,12 @@ module.exports.assign = async (event) => {
       message: `Tu incidente ${updatedIncident.trackingCode} ha sido asignado a ${assignedToNameFinal}`
     });
 
-    // Enviar notificación in-app y SMS al admin asignado
+    // Enviar notificación in-app y WebSocket al admin asignado
     await notifyIncidentAssignment(
       assignedToId,
       updatedIncident.id,
-      updatedIncident.description
+      updatedIncident.description,
+      updatedIncident.urgency // Pasar urgencia para determinar si enviar email
     );
 
     return success({

@@ -5,9 +5,11 @@ import { incidentStatuses, urgencyLevels, incidentTypes, locations } from '../mo
 import { apiRequest, API_CONFIG } from '../config';
 import websocketManager from '../utils/websocket';
 import SuperAdminLayout from './SuperAdminLayout';
+import EmailSubscriptionsPanel from './EmailSubscriptionsPanel';
 
 function SuperAdminDashboard({ currentAdmin, onLogout }) {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('incidents');
   const [incidents, setIncidents] = useState([]);
   const [adminsWorkload, setAdminsWorkload] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -222,7 +224,13 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
   };
 
   return (
-    <SuperAdminLayout currentAdmin={currentAdmin} onLogout={onLogout}>
+    <SuperAdminLayout 
+      currentAdmin={currentAdmin} 
+      onLogout={onLogout}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
+    >
+      {activeTab === 'incidents' ? (
       <div className="container mx-auto px-4 py-8">
         {/* Filtros y búsqueda */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">
@@ -562,6 +570,17 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      ) : (
+        <div className="container mx-auto px-4 py-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Gestión de Suscripciones por Email</h2>
+            <p className="text-gray-600 mt-2">
+              Administra las suscripciones de los administradores para recibir notificaciones por email cuando se registren incidentes críticos.
+            </p>
+          </div>
+          <EmailSubscriptionsPanel />
         </div>
       )}
     </SuperAdminLayout>

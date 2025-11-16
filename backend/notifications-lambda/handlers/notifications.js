@@ -5,7 +5,8 @@ const {
   markNotificationAsRead,
   countUnreadNotifications
 } = require('../utils/dynamodb');
-const { sendSMS, sendIncidentAssignmentSMS } = require('../utils/sns');
+const { sendEmail, sendIncidentAssignmentEmail, subscribeEmailToTopic } = require('../utils/ses');
+const { getAdminsWithSubscriptionStatus, unsubscribeEmail } = require('../utils/subscriptions');
 
 const success = (statusCode, data) => ({
   statusCode,
@@ -96,32 +97,112 @@ module.exports.markAsRead = async (event) => {
 };
 
 /**
- * Enviar SMS
+ * Enviar Email vía SNS
  */
-module.exports.sendSMS = async (event) => {
+module.exports.sendEmail = async (event) => {
   try {
-    const { phoneNumber, message, incidentId, incidentDescription } = JSON.parse(event.body);
-
-    if (!phoneNumber || (!message && !incidentId)) {
-      return error(400, 'Campos requeridos: phoneNumber y (message o incidentId)');
-    }
+    const { email, name, incidentId, incidentDescription, subject, message } = JSON.parse(event.body);
 
     let result;
-    if (incidentId && incidentDescription) {
-      // Enviar SMS de asignación de incidente
-      result = await sendIncidentAssignmentSMS(phoneNumber, incidentId, incidentDescription);
+    if (incidentId && incidentDescription && name) {
+      // Enviar notificación de incidente al topic SNS
+      result = await sendIncidentAssignmentEmail(email, name, incidentId, incidentDescription);
+      
+      return success(200, {
+        success: true,
+        messageId: result.MessageId,
+        message: 'Email enviado exitosamente a todos los suscritos del topic'
+      });
+    } else if (subject && message) {
+      // Enviar mensaje genérico al topic
+      result = await sendEmail(subject, message);
+      
+      return success(200, {
+        success: true,
+        messageId: result.MessageId,
+        message: 'Email enviado exitosamente'
+      });
     } else {
-      // Enviar SMS genérico
-      result = await sendSMS(phoneNumber, message);
+      return error(400, 'Campos requeridos: (email, name, incidentId, incidentDescription) o (subject, message)');
+    }
+  } catch (err) {
+    console.error('Error al enviar Email:', err);
+    return error(500, err.message || 'Error al enviar Email');
+  }
+};
+
+/**
+ * Listar admins y su estado de suscripción
+ */
+module.exports.listSubscriptions = async (event) => {
+  try {
+    const admins = await getAdminsWithSubscriptionStatus();
+    
+    const summary = {
+      total: admins.length,
+      confirmed: admins.filter(a => a.subscriptionStatus === 'confirmed').length,
+      pending: admins.filter(a => a.subscriptionStatus === 'pending').length,
+      notSubscribed: admins.filter(a => a.subscriptionStatus === 'not_subscribed').length
+    };
+
+    return success(200, {
+      admins,
+      summary
+    });
+  } catch (err) {
+    console.error('Error al listar suscripciones:', err);
+    return error(500, err.message || 'Error al listar suscripciones');
+  }
+};
+
+/**
+ * Suscribir email al topic
+ */
+module.exports.subscribeEmail = async (event) => {
+  try {
+    const { email } = JSON.parse(event.body);
+
+    if (!email) {
+      return error(400, 'Campo requerido: email');
+    }
+
+    const result = await subscribeEmailToTopic(email);
+
+    if (result.alreadySubscribed) {
+      return success(200, {
+        message: 'El email ya está suscrito',
+        alreadySubscribed: true
+      });
     }
 
     return success(200, {
-      success: true,
-      messageId: result.MessageId,
-      message: 'SMS enviado exitosamente'
+      message: 'Invitación enviada. El usuario debe confirmar desde su email.',
+      subscriptionArn: result.SubscriptionArn
     });
   } catch (err) {
-    console.error('Error al enviar SMS:', err);
-    return error(500, err.message || 'Error al enviar SMS');
+    console.error('Error al suscribir email:', err);
+    return error(500, err.message || 'Error al suscribir email');
+  }
+};
+
+/**
+ * Cancelar suscripción
+ */
+module.exports.unsubscribe = async (event) => {
+  try {
+    const { subscriptionArn } = JSON.parse(event.body);
+
+    if (!subscriptionArn || subscriptionArn === 'PendingConfirmation') {
+      return error(400, 'SubscriptionArn inválido o pendiente');
+    }
+
+    await unsubscribeEmail(subscriptionArn);
+
+    return success(200, {
+      message: 'Suscripción cancelada exitosamente'
+    });
+  } catch (err) {
+    console.error('Error al cancelar suscripción:', err);
+    return error(500, err.message || 'Error al cancelar suscripción');
   }
 };

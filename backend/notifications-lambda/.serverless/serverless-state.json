@@ -110,10 +110,28 @@
               "LogGroupName": "/aws/lambda/alertautec-notifications-service-dev-markAsRead"
             }
           },
-          "SendSMSLogGroup": {
+          "SendEmailLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/alertautec-notifications-service-dev-sendSMS"
+              "LogGroupName": "/aws/lambda/alertautec-notifications-service-dev-sendEmail"
+            }
+          },
+          "ListSubscriptionsLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/alertautec-notifications-service-dev-listSubscriptions"
+            }
+          },
+          "SubscribeEmailLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/alertautec-notifications-service-dev-subscribeEmail"
+            }
+          },
+          "UnsubscribeEmailLogGroup": {
+            "Type": "AWS::Logs::LogGroup",
+            "Properties": {
+              "LogGroupName": "/aws/lambda/alertautec-notifications-service-dev-unsubscribeEmail"
             }
           },
           "CreateNotificationLambdaFunction": {
@@ -123,7 +141,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-notifications-service/dev/1763310644699-2025-11-16T16:30:44.699Z/alertautec-notifications-service.zip"
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
               },
               "Handler": "handlers/notifications.create",
               "Runtime": "nodejs18.x",
@@ -151,7 +169,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-notifications-service/dev/1763310644699-2025-11-16T16:30:44.699Z/alertautec-notifications-service.zip"
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
               },
               "Handler": "handlers/notifications.list",
               "Runtime": "nodejs18.x",
@@ -179,7 +197,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-notifications-service/dev/1763310644699-2025-11-16T16:30:44.699Z/alertautec-notifications-service.zip"
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
               },
               "Handler": "handlers/notifications.markAsRead",
               "Runtime": "nodejs18.x",
@@ -200,18 +218,18 @@
               "MarkAsReadLogGroup"
             ]
           },
-          "SendSMSLambdaFunction": {
+          "SendEmailLambdaFunction": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
               "Code": {
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-notifications-service/dev/1763310644699-2025-11-16T16:30:44.699Z/alertautec-notifications-service.zip"
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
               },
-              "Handler": "handlers/notifications.sendSMS",
+              "Handler": "handlers/notifications.sendEmail",
               "Runtime": "nodejs18.x",
-              "FunctionName": "alertautec-notifications-service-dev-sendSMS",
+              "FunctionName": "alertautec-notifications-service-dev-sendEmail",
               "MemorySize": 1024,
               "Timeout": 6,
               "Environment": {
@@ -225,47 +243,161 @@
               "Role": "arn:aws:iam::119327998857:role/LabRole"
             },
             "DependsOn": [
-              "SendSMSLogGroup"
+              "SendEmailLogGroup"
             ]
           },
-          "CreateNotificationLambdaVersiongM7wUwGYzmIBQwyCsUrXWypvSi3zefbCR9E85zmuvA": {
+          "ListSubscriptionsLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+              },
+              "Handler": "handlers/notifications.listSubscriptions",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "alertautec-notifications-service-dev-listSubscriptions",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "NOTIFICATIONS_TABLE": "alertautec-notifications-service-dev",
+                  "SNS_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"SNS_TOPIC_ARN\"]"
+                  }
+                }
+              },
+              "Role": "arn:aws:iam::119327998857:role/LabRole"
+            },
+            "DependsOn": [
+              "ListSubscriptionsLogGroup"
+            ]
+          },
+          "SubscribeEmailLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+              },
+              "Handler": "handlers/notifications.subscribeEmail",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "alertautec-notifications-service-dev-subscribeEmail",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "NOTIFICATIONS_TABLE": "alertautec-notifications-service-dev",
+                  "SNS_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"SNS_TOPIC_ARN\"]"
+                  }
+                }
+              },
+              "Role": "arn:aws:iam::119327998857:role/LabRole"
+            },
+            "DependsOn": [
+              "SubscribeEmailLogGroup"
+            ]
+          },
+          "UnsubscribeEmailLambdaFunction": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+              "Code": {
+                "S3Bucket": {
+                  "Ref": "ServerlessDeploymentBucket"
+                },
+                "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+              },
+              "Handler": "handlers/notifications.unsubscribe",
+              "Runtime": "nodejs18.x",
+              "FunctionName": "alertautec-notifications-service-dev-unsubscribeEmail",
+              "MemorySize": 1024,
+              "Timeout": 6,
+              "Environment": {
+                "Variables": {
+                  "NOTIFICATIONS_TABLE": "alertautec-notifications-service-dev",
+                  "SNS_TOPIC_ARN": {
+                    "$ref": "$[\"service\"][\"provider\"][\"environment\"][\"SNS_TOPIC_ARN\"]"
+                  }
+                }
+              },
+              "Role": "arn:aws:iam::119327998857:role/LabRole"
+            },
+            "DependsOn": [
+              "UnsubscribeEmailLogGroup"
+            ]
+          },
+          "CreateNotificationLambdaVersionHMVEfhEnCL09tUAUbcQJO39yH2Qq052Nw3TiOJfes": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateNotificationLambdaFunction"
               },
-              "CodeSha256": "mRxLQeSO2Fxw0+I7vS4BxYR5Ztbg39aRKv1iHtcFq3A="
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
             }
           },
-          "ListNotificationsLambdaVersionQp73LDzUFvZF2K3ZlWq8kvw5WtcIMZRXWzxeDzgH1o": {
+          "ListNotificationsLambdaVersionidJifUIfc8ajncQhsRq3turVYVYSKtOzQvH4ECwvMnc": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ListNotificationsLambdaFunction"
               },
-              "CodeSha256": "mRxLQeSO2Fxw0+I7vS4BxYR5Ztbg39aRKv1iHtcFq3A="
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
             }
           },
-          "MarkAsReadLambdaVersionxQ2klLi7CbVVSIHf0ga42uj6zGaJV2so4tBEPfGUVU": {
+          "MarkAsReadLambdaVersion8t5LgbmiSSBbeZoRJsv1UMo2RfVxEmQoOlK9moNHcI": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "MarkAsReadLambdaFunction"
               },
-              "CodeSha256": "mRxLQeSO2Fxw0+I7vS4BxYR5Ztbg39aRKv1iHtcFq3A="
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
             }
           },
-          "SendSMSLambdaVersionRIC8bZC1emniT74Ao2sPODL60dAHouaIEfiJKjhmncA": {
+          "SendEmailLambdaVersionvHuJ5YPZcLBrIJAZWeL0WIDPh9jnpya2lEKpO6il4s": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
-                "Ref": "SendSMSLambdaFunction"
+                "Ref": "SendEmailLambdaFunction"
               },
-              "CodeSha256": "mRxLQeSO2Fxw0+I7vS4BxYR5Ztbg39aRKv1iHtcFq3A="
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+            }
+          },
+          "ListSubscriptionsLambdaVersionXgwa4J4sLhHANxmGYYGXNtFF4jU0gFlamP5yzTHdE": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "ListSubscriptionsLambdaFunction"
+              },
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+            }
+          },
+          "SubscribeEmailLambdaVersionMCnHGOSZZNQLg9O85f9idSQylbgPaJnViUkicB7L5Zw": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "SubscribeEmailLambdaFunction"
+              },
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+            }
+          },
+          "UnsubscribeEmailLambdaVersionNjHD8HtcT7dC6wtWJitBxjgnwsf1OsjkNh0mNiSLg": {
+            "Type": "AWS::Lambda::Version",
+            "DeletionPolicy": "Retain",
+            "Properties": {
+              "FunctionName": {
+                "Ref": "UnsubscribeEmailLambdaFunction"
+              },
+              "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
             }
           },
           "ApiGatewayRestApi": {
@@ -343,13 +475,49 @@
               }
             }
           },
-          "ApiGatewayResourceNotificationsSms": {
+          "ApiGatewayResourceNotificationsEmail": {
             "Type": "AWS::ApiGateway::Resource",
             "Properties": {
               "ParentId": {
                 "Ref": "ApiGatewayResourceNotifications"
               },
-              "PathPart": "sms",
+              "PathPart": "email",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceNotificationsSubscriptions": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceNotifications"
+              },
+              "PathPart": "subscriptions",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceNotificationsSubscribe": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceNotifications"
+              },
+              "PathPart": "subscribe",
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayResourceNotificationsUnsubscribe": {
+            "Type": "AWS::ApiGateway::Resource",
+            "Properties": {
+              "ParentId": {
+                "Ref": "ApiGatewayResourceNotifications"
+              },
+              "PathPart": "unsubscribe",
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
               }
@@ -490,7 +658,7 @@
               }
             }
           },
-          "ApiGatewayMethodNotificationsSmsOptions": {
+          "ApiGatewayMethodNotificationsEmailOptions": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "AuthorizationType": "NONE",
@@ -528,7 +696,142 @@
                 ]
               },
               "ResourceId": {
-                "Ref": "ApiGatewayResourceNotificationsSms"
+                "Ref": "ApiGatewayResourceNotificationsEmail"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodNotificationsSubscriptionsOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotificationsSubscriptions"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodNotificationsSubscribeOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotificationsSubscribe"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              }
+            }
+          },
+          "ApiGatewayMethodNotificationsUnsubscribeOptions": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "AuthorizationType": "NONE",
+              "HttpMethod": "OPTIONS",
+              "MethodResponses": [
+                {
+                  "StatusCode": "200",
+                  "ResponseParameters": {
+                    "method.response.header.Access-Control-Allow-Origin": true,
+                    "method.response.header.Access-Control-Allow-Headers": true,
+                    "method.response.header.Access-Control-Allow-Methods": true
+                  },
+                  "ResponseModels": {}
+                }
+              ],
+              "RequestParameters": {},
+              "Integration": {
+                "Type": "MOCK",
+                "RequestTemplates": {
+                  "application/json": "{statusCode:200}"
+                },
+                "ContentHandling": "CONVERT_TO_TEXT",
+                "IntegrationResponses": [
+                  {
+                    "StatusCode": "200",
+                    "ResponseParameters": {
+                      "method.response.header.Access-Control-Allow-Origin": "'*'",
+                      "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Amzn-Trace-Id'",
+                      "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
+                    },
+                    "ResponseTemplates": {
+                      "application/json": ""
+                    }
+                  }
+                ]
+              },
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotificationsUnsubscribe"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -673,13 +976,13 @@
               "MarkAsReadLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayMethodNotificationsSmsPost": {
+          "ApiGatewayMethodNotificationsEmailPost": {
             "Type": "AWS::ApiGateway::Method",
             "Properties": {
               "HttpMethod": "POST",
               "RequestParameters": {},
               "ResourceId": {
-                "Ref": "ApiGatewayResourceNotificationsSms"
+                "Ref": "ApiGatewayResourceNotificationsEmail"
               },
               "RestApiId": {
                 "Ref": "ApiGatewayRestApi"
@@ -704,7 +1007,7 @@
                       ":lambda:path/2015-03-31/functions/",
                       {
                         "Fn::GetAtt": [
-                          "SendSMSLambdaFunction",
+                          "SendEmailLambdaFunction",
                           "Arn"
                         ]
                       },
@@ -716,10 +1019,148 @@
               "MethodResponses": []
             },
             "DependsOn": [
-              "SendSMSLambdaPermissionApiGateway"
+              "SendEmailLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1763310638764": {
+          "ApiGatewayMethodNotificationsSubscriptionsGet": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "GET",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotificationsSubscriptions"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "ListSubscriptionsLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "ListSubscriptionsLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodNotificationsSubscribePost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotificationsSubscribe"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "SubscribeEmailLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "SubscribeEmailLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayMethodNotificationsUnsubscribePost": {
+            "Type": "AWS::ApiGateway::Method",
+            "Properties": {
+              "HttpMethod": "POST",
+              "RequestParameters": {},
+              "ResourceId": {
+                "Ref": "ApiGatewayResourceNotificationsUnsubscribe"
+              },
+              "RestApiId": {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "ApiKeyRequired": false,
+              "AuthorizationType": "NONE",
+              "Integration": {
+                "IntegrationHttpMethod": "POST",
+                "Type": "AWS_PROXY",
+                "Uri": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":apigateway:",
+                      {
+                        "Ref": "AWS::Region"
+                      },
+                      ":lambda:path/2015-03-31/functions/",
+                      {
+                        "Fn::GetAtt": [
+                          "UnsubscribeEmailLambdaFunction",
+                          "Arn"
+                        ]
+                      },
+                      "/invocations"
+                    ]
+                  ]
+                }
+              },
+              "MethodResponses": []
+            },
+            "DependsOn": [
+              "UnsubscribeEmailLambdaPermissionApiGateway"
+            ]
+          },
+          "ApiGatewayDeployment1763315821605": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -731,11 +1172,17 @@
               "ApiGatewayMethodNotificationsOptions",
               "ApiGatewayMethodNotificationsUserUseridVarOptions",
               "ApiGatewayMethodNotificationsReadIdVarOptions",
-              "ApiGatewayMethodNotificationsSmsOptions",
+              "ApiGatewayMethodNotificationsEmailOptions",
+              "ApiGatewayMethodNotificationsSubscriptionsOptions",
+              "ApiGatewayMethodNotificationsSubscribeOptions",
+              "ApiGatewayMethodNotificationsUnsubscribeOptions",
               "ApiGatewayMethodNotificationsPost",
               "ApiGatewayMethodNotificationsUserUseridVarGet",
               "ApiGatewayMethodNotificationsReadIdVarPut",
-              "ApiGatewayMethodNotificationsSmsPost"
+              "ApiGatewayMethodNotificationsEmailPost",
+              "ApiGatewayMethodNotificationsSubscriptionsGet",
+              "ApiGatewayMethodNotificationsSubscribePost",
+              "ApiGatewayMethodNotificationsUnsubscribePost"
             ]
           },
           "CreateNotificationLambdaPermissionApiGateway": {
@@ -849,12 +1296,123 @@
               }
             }
           },
-          "SendSMSLambdaPermissionApiGateway": {
+          "SendEmailLambdaPermissionApiGateway": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
                 "Fn::GetAtt": [
-                  "SendSMSLambdaFunction",
+                  "SendEmailLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "ListSubscriptionsLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "ListSubscriptionsLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "SubscribeEmailLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "SubscribeEmailLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "Action": "lambda:InvokeFunction",
+              "Principal": "apigateway.amazonaws.com",
+              "SourceArn": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition"
+                    },
+                    ":execute-api:",
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    ":",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":",
+                    {
+                      "Ref": "ApiGatewayRestApi"
+                    },
+                    "/*/*"
+                  ]
+                ]
+              }
+            }
+          },
+          "UnsubscribeEmailLambdaPermissionApiGateway": {
+            "Type": "AWS::Lambda::Permission",
+            "Properties": {
+              "FunctionName": {
+                "Fn::GetAtt": [
+                  "UnsubscribeEmailLambdaFunction",
                   "Arn"
                 ]
               },
@@ -951,7 +1509,7 @@
           "CreateNotificationLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateNotificationLambdaVersiongM7wUwGYzmIBQwyCsUrXWypvSi3zefbCR9E85zmuvA"
+              "Ref": "CreateNotificationLambdaVersionHMVEfhEnCL09tUAUbcQJO39yH2Qq052Nw3TiOJfes"
             },
             "Export": {
               "Name": "sls-alertautec-notifications-service-dev-CreateNotificationLambdaFunctionQualifiedArn"
@@ -960,7 +1518,7 @@
           "ListNotificationsLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ListNotificationsLambdaVersionQp73LDzUFvZF2K3ZlWq8kvw5WtcIMZRXWzxeDzgH1o"
+              "Ref": "ListNotificationsLambdaVersionidJifUIfc8ajncQhsRq3turVYVYSKtOzQvH4ECwvMnc"
             },
             "Export": {
               "Name": "sls-alertautec-notifications-service-dev-ListNotificationsLambdaFunctionQualifiedArn"
@@ -969,19 +1527,46 @@
           "MarkAsReadLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "MarkAsReadLambdaVersionxQ2klLi7CbVVSIHf0ga42uj6zGaJV2so4tBEPfGUVU"
+              "Ref": "MarkAsReadLambdaVersion8t5LgbmiSSBbeZoRJsv1UMo2RfVxEmQoOlK9moNHcI"
             },
             "Export": {
               "Name": "sls-alertautec-notifications-service-dev-MarkAsReadLambdaFunctionQualifiedArn"
             }
           },
-          "SendSMSLambdaFunctionQualifiedArn": {
+          "SendEmailLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "SendSMSLambdaVersionRIC8bZC1emniT74Ao2sPODL60dAHouaIEfiJKjhmncA"
+              "Ref": "SendEmailLambdaVersionvHuJ5YPZcLBrIJAZWeL0WIDPh9jnpya2lEKpO6il4s"
             },
             "Export": {
-              "Name": "sls-alertautec-notifications-service-dev-SendSMSLambdaFunctionQualifiedArn"
+              "Name": "sls-alertautec-notifications-service-dev-SendEmailLambdaFunctionQualifiedArn"
+            }
+          },
+          "ListSubscriptionsLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "ListSubscriptionsLambdaVersionXgwa4J4sLhHANxmGYYGXNtFF4jU0gFlamP5yzTHdE"
+            },
+            "Export": {
+              "Name": "sls-alertautec-notifications-service-dev-ListSubscriptionsLambdaFunctionQualifiedArn"
+            }
+          },
+          "SubscribeEmailLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "SubscribeEmailLambdaVersionMCnHGOSZZNQLg9O85f9idSQylbgPaJnViUkicB7L5Zw"
+            },
+            "Export": {
+              "Name": "sls-alertautec-notifications-service-dev-SubscribeEmailLambdaFunctionQualifiedArn"
+            }
+          },
+          "UnsubscribeEmailLambdaFunctionQualifiedArn": {
+            "Description": "Current Lambda function version",
+            "Value": {
+              "Ref": "UnsubscribeEmailLambdaVersionNjHD8HtcT7dC6wtWJitBxjgnwsf1OsjkNh0mNiSLg"
+            },
+            "Export": {
+              "Name": "sls-alertautec-notifications-service-dev-UnsubscribeEmailLambdaFunctionQualifiedArn"
             }
           },
           "ServiceEndpoint": {
@@ -1132,7 +1717,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "CreateNotificationLambdaVersiongM7wUwGYzmIBQwyCsUrXWypvSi3zefbCR9E85zmuvA"
+        "versionLogicalId": "CreateNotificationLambdaVersionHMVEfhEnCL09tUAUbcQJO39yH2Qq052Nw3TiOJfes"
       },
       "listNotifications": {
         "handler": "handlers/notifications.list",
@@ -1168,7 +1753,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "ListNotificationsLambdaVersionQp73LDzUFvZF2K3ZlWq8kvw5WtcIMZRXWzxeDzgH1o"
+        "versionLogicalId": "ListNotificationsLambdaVersionidJifUIfc8ajncQhsRq3turVYVYSKtOzQvH4ECwvMnc"
       },
       "markAsRead": {
         "handler": "handlers/notifications.markAsRead",
@@ -1204,14 +1789,14 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "MarkAsReadLambdaVersionxQ2klLi7CbVVSIHf0ga42uj6zGaJV2so4tBEPfGUVU"
+        "versionLogicalId": "MarkAsReadLambdaVersion8t5LgbmiSSBbeZoRJsv1UMo2RfVxEmQoOlK9moNHcI"
       },
-      "sendSMS": {
-        "handler": "handlers/notifications.sendSMS",
+      "sendEmail": {
+        "handler": "handlers/notifications.sendEmail",
         "events": [
           {
             "http": {
-              "path": "notifications/sms",
+              "path": "notifications/email",
               "method": "post",
               "cors": {
                 "origin": "*",
@@ -1234,13 +1819,121 @@
             }
           }
         ],
-        "name": "alertautec-notifications-service-dev-sendSMS",
+        "name": "alertautec-notifications-service-dev-sendEmail",
         "package": {},
         "memory": 1024,
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "SendSMSLambdaVersionRIC8bZC1emniT74Ao2sPODL60dAHouaIEfiJKjhmncA"
+        "versionLogicalId": "SendEmailLambdaVersionvHuJ5YPZcLBrIJAZWeL0WIDPh9jnpya2lEKpO6il4s"
+      },
+      "listSubscriptions": {
+        "handler": "handlers/notifications.listSubscriptions",
+        "events": [
+          {
+            "http": {
+              "path": "notifications/subscriptions",
+              "method": "get",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "GET"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "alertautec-notifications-service-dev-listSubscriptions",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "ListSubscriptionsLambdaVersionXgwa4J4sLhHANxmGYYGXNtFF4jU0gFlamP5yzTHdE"
+      },
+      "subscribeEmail": {
+        "handler": "handlers/notifications.subscribeEmail",
+        "events": [
+          {
+            "http": {
+              "path": "notifications/subscribe",
+              "method": "post",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "alertautec-notifications-service-dev-subscribeEmail",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "SubscribeEmailLambdaVersionMCnHGOSZZNQLg9O85f9idSQylbgPaJnViUkicB7L5Zw"
+      },
+      "unsubscribeEmail": {
+        "handler": "handlers/notifications.unsubscribe",
+        "events": [
+          {
+            "http": {
+              "path": "notifications/unsubscribe",
+              "method": "post",
+              "cors": {
+                "origin": "*",
+                "methods": [
+                  "OPTIONS",
+                  "POST"
+                ],
+                "headers": [
+                  "Content-Type",
+                  "X-Amz-Date",
+                  "Authorization",
+                  "X-Api-Key",
+                  "X-Amz-Security-Token",
+                  "X-Amz-User-Agent",
+                  "X-Amzn-Trace-Id"
+                ],
+                "allowCredentials": false
+              },
+              "integration": "AWS_PROXY"
+            }
+          }
+        ],
+        "name": "alertautec-notifications-service-dev-unsubscribeEmail",
+        "package": {},
+        "memory": 1024,
+        "timeout": 6,
+        "runtime": "nodejs18.x",
+        "vpc": {},
+        "versionLogicalId": "UnsubscribeEmailLambdaVersionNjHD8HtcT7dC6wtWJitBxjgnwsf1OsjkNh0mNiSLg"
       }
     },
     "resources": {
@@ -1320,7 +2013,7 @@
     "artifact": "C:\\Users\\Asus_PC\\Documents\\Cloud Computing\\cloud-hackaton\\backend\\notifications-lambda\\.serverless\\alertautec-notifications-service.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/alertautec-notifications-service/dev/1763310644699-2025-11-16T16:30:44.699Z",
+    "artifactDirectoryName": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z",
     "artifact": "alertautec-notifications-service.zip"
   }
 }

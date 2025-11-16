@@ -8,7 +8,7 @@ const dynamoClient = new DynamoDBClient({ region: 'us-east-1' });
 const dynamoDB = DynamoDBDocumentClient.from(dynamoClient);
 
 const NOTIFICATIONS_FUNCTION = 'alertautec-notifications-service-dev-createNotification';
-const SMS_FUNCTION = 'alertautec-notifications-service-dev-sendSMS';
+const EMAIL_FUNCTION = 'alertautec-notifications-service-dev-sendEmail';
 const USERS_TABLE = 'alertautec-auth-users-dev';
 
 /**
@@ -59,35 +59,36 @@ async function createInAppNotification(userId, title, message, type = 'info', me
 }
 
 /**
- * Enviar SMS de notificación
+ * Enviar notificación por Email (SNS)
  */
-async function sendSMSNotification(phoneNumber, incidentId, incidentDescription) {
+async function sendEmailNotification(adminEmail, adminName, incidentId, incidentDescription) {
   try {
-    if (!phoneNumber) {
-      console.log('No se proporcionó número de teléfono, omitiendo SMS');
+    if (!adminEmail) {
+      console.log('No se proporcionó email, omitiendo notificación por email');
       return null;
     }
 
     const payload = {
       body: JSON.stringify({
-        phoneNumber,
+        email: adminEmail,
+        name: adminName,
         incidentId,
         incidentDescription
       })
     };
 
     const command = new InvokeCommand({
-      FunctionName: SMS_FUNCTION,
+      FunctionName: EMAIL_FUNCTION,
       Payload: JSON.stringify(payload)
     });
 
     const response = await lambdaClient.send(command);
     const result = JSON.parse(new TextDecoder().decode(response.Payload));
-    console.log('SMS enviado:', result);
+    console.log('✅ Email enviado:', result);
     return result;
   } catch (error) {
-    console.error('Error al enviar SMS:', error);
-    // No lanzamos el error para que no falle la asignación si el SMS falla
+    console.error('Error al enviar email:', error);
+    // No lanzamos el error para que no falle la asignación si el email falla
     return null;
   }
 }
@@ -95,7 +96,7 @@ async function sendSMSNotification(phoneNumber, incidentId, incidentDescription)
 /**
  * Notificar asignación de incidente
  */
-async function notifyIncidentAssignment(adminId, incidentId, incidentDescription) {
+async function notifyIncidentAssignment(adminId, incidentId, incidentDescription, urgency) {
   try {
     // Obtener datos del admin desde DynamoDB
     const admin = await getUserById(adminId);
@@ -125,12 +126,14 @@ async function notifyIncidentAssignment(adminId, incidentId, incidentDescription
 
     console.log(`✅ Notificación WebSocket enviada a ${admin.name}`);
 
-    // Enviar SMS si tiene número de teléfono
-    if (admin.phoneNumber) {
-      console.log(`Enviando SMS a ${admin.phoneNumber}`);
-      await sendSMSNotification(admin.phoneNumber, incidentId, incidentDescription);
+    // Enviar Email solo si el incidente es CRÍTICO
+    if (urgency === 'critica') {
+      console.log(`⚠️ Incidente CRÍTICO detectado - Enviando email a todos los admins suscritos`);
+      if (admin.email) {
+        await sendEmailNotification(admin.email, admin.name, incidentId, incidentDescription);
+      }
     } else {
-      console.log(`Admin ${admin.name} no tiene número de teléfono registrado`);
+      console.log(`ℹ️ Incidente con urgencia "${urgency}" - No se envía email (solo críticos)`);
     }
 
     console.log(`Notificaciones enviadas exitosamente`);
@@ -142,6 +145,6 @@ async function notifyIncidentAssignment(adminId, incidentId, incidentDescription
 
 module.exports = {
   createInAppNotification,
-  sendSMSNotification,
+  sendEmailNotification,
   notifyIncidentAssignment
 };
