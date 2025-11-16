@@ -344,59 +344,60 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
                       </td>
                     </tr>
                   ) : (
-                  filteredIncidents.map(incident => {
-                    const statusData = getStatusData(incident.status);
-                    return (
-                    <tr key={incident.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {incident.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        {incident.type}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-700">
-                        {incident.location}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getUrgencyColor(incident.urgency)}`}>
-                          {urgencyLevels.find(u => u.value === incident.urgency)?.label}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusData?.color}`}>
-                          {statusData?.icon} {statusData?.label}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                        {incident.assignedToName || incident.assignedTo === 'unassigned' ? (
-                          incident.assignedToName ? (
-                            <span className="text-gray-900 font-medium">{incident.assignedToName}</span>
-                          ) : (
-                            <span className="text-gray-400 italic">Sin asignar</span>
-                          )
-                        ) : (
-                          <span className="text-gray-400 italic">Sin asignar</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                        <button
-                          onClick={() => handleViewDetails(incident)}
-                          className="text-blue-600 hover:text-blue-800 font-medium"
-                        >
-                          Ver
-                        </button>
-                        {(incident.status === 'pendiente' || incident.status === 'en-proceso') && (
-                          <button
-                            onClick={() => handleAssignClick(incident)}
-                            className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-md hover:bg-green-700 transition-colors"
-                          >
-                            Asignar
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                  })}
+                    filteredIncidents.map(incident => {
+                      const statusData = getStatusData(incident.status);
+                      return (
+                        <tr key={incident.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {incident.id}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            {incident.type}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-700">
+                            {incident.location}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getUrgencyColor(incident.urgency)}`}>
+                              {urgencyLevels.find(u => u.value === incident.urgency)?.label}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusData?.color}`}>
+                              {statusData?.icon} {statusData?.label}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            {incident.assignedToName || incident.assignedTo === 'unassigned' ? (
+                              incident.assignedToName ? (
+                                <span className="text-gray-900 font-medium">{incident.assignedToName}</span>
+                              ) : (
+                                <span className="text-gray-400 italic">Sin asignar</span>
+                              )
+                            ) : (
+                              <span className="text-gray-400 italic">Sin asignar</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                            <button
+                              onClick={() => handleViewDetails(incident)}
+                              className="text-blue-600 hover:text-blue-800 font-medium"
+                            >
+                              Ver
+                            </button>
+                            {(incident.status === 'pendiente' || incident.status === 'en-proceso') && (
+                              <button
+                                onClick={() => handleAssignClick(incident)}
+                                className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-md hover:bg-green-700 transition-colors"
+                              >
+                                Asignar
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -404,7 +405,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
         </div>
       </div>
 
-      {/* Modal de detalles */}      {/* Modal de detalles */}
+      {/* Modal de detalles */}
       {showDetailModal && selectedIncident && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
           <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
