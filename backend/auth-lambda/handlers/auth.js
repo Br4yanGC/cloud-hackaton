@@ -48,6 +48,7 @@ module.exports.register = async (event) => {
       {
         id: user.id,
         email: user.email,
+        name: user.name,
         role: user.role
       },
       JWT_SECRET,
@@ -97,6 +98,7 @@ module.exports.login = async (event) => {
       {
         id: user.id,
         email: user.email,
+        name: user.name,
         role: user.role
       },
       JWT_SECRET,
@@ -193,6 +195,7 @@ module.exports.validateToken = async (event) => {
       user: {
         id: decoded.id,
         email: decoded.email,
+        name: decoded.name,
         role: decoded.role
       }
     });

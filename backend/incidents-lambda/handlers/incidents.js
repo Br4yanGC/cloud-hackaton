@@ -240,6 +240,13 @@ module.exports.assign = async (event) => {
     const assignedToId = assignTo === 'me' ? auth.user.id : assignTo;
     const assignedToName = assignTo === 'me' ? auth.user.name : body.assignedToName || 'Admin';
 
+    console.log('Asignando incidente:', {
+      assignTo,
+      assignedToId,
+      assignedToName,
+      authUser: auth.user
+    });
+
     const updates = {
       assignedTo: assignedToId,
       assignedToName,
@@ -255,7 +262,11 @@ module.exports.assign = async (event) => {
       ]
     };
 
+    console.log('Updates a aplicar:', updates);
+
     const updatedIncident = await updateIncident(id, updates);
+
+    console.log('Incidente actualizado:', updatedIncident);
 
     return success({
       message: 'Incidente asignado exitosamente',
