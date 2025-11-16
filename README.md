@@ -94,21 +94,39 @@ cloud-hackaton/
 - Predicciones sobre tipos de incidentes más probables en áreas y horarios específicos
 
 
-## 🚀 Quick Start
+## 🚀 Despliegue
+
+### 1. Configurar Credenciales Localmente
+
+```powershell
+# Abrir archivo de credenciales
+notepad $env:USERPROFILE\.aws\credentials
+
+# Pegar las credenciales:
+[default]
+aws_access_key_id=TU_ACCESS_KEY
+aws_secret_access_key=TU_SECRET_KEY
+aws_session_token=TU_SESSION_TOKEN
+```
+
+### 2. Auth Lambda (Autenticación)
 
 ```bash
-# Navegar al backend
-cd backend/
-
-# Navegar al frontend
-cd frontend
-
-# Instalar dependencias
+cd backend/auth-lambda
 npm install
+serverless deploy
+```
 
-# Ejecutar en desarrollo
-npm run dev
+**Salida esperada:**
+- Stack: `alertautec-auth-v2-dev`
+- Endpoints: Login, Register, Profile, etc.
+- Tabla DynamoDB: `alertautec-auth-v2-users-dev`
 
+**⚠️ IMPORTANTE:** Copia la URL base del API Gateway (ej: `https://9wasgnx72c.execute-api.us-east-1.amazonaws.com/dev`)
+
+**Crear usuarios por defecto:**
+```bash
+node create-users-quick.js
 ```
 
 La aplicación estará disponible en `http://localhost:3000`
