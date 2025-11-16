@@ -37,9 +37,9 @@ export default function EmailSubscriptionsPanel() {
     }
   };
 
-  const handleSubscribe = async (email) => {
+  const handleSubscribe = async (admin) => {
     try {
-      setActionLoading(email);
+      setActionLoading(admin.email);
       const token = localStorage.getItem('token');
 
       const response = await fetch(`${NOTIFICATIONS_API}/notifications/subscribe`, {
@@ -48,7 +48,10 @@ export default function EmailSubscriptionsPanel() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ 
+          email: admin.email,
+          email_notification: admin.email_notification 
+        })
       });
 
       if (!response.ok) throw new Error('Error al enviar invitación');
@@ -58,7 +61,7 @@ export default function EmailSubscriptionsPanel() {
       if (data.alreadySubscribed) {
         toast.success('El administrador ya está suscrito');
       } else {
-        toast.success('Invitación enviada. El admin debe confirmar desde su email.');
+        toast.success(`Invitación enviada a ${data.subscribedEmail || admin.email_notification}. El admin debe confirmar desde su email.`);
       }
 
       await loadSubscriptions();
@@ -173,7 +176,10 @@ export default function EmailSubscriptionsPanel() {
                 Administrador
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
+                Email (Login)
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Email (Notificaciones)
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Estado
@@ -193,12 +199,17 @@ export default function EmailSubscriptionsPanel() {
                   <div className="text-sm text-gray-600">{admin.email}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-blue-600 font-medium">
+                    {admin.email_notification || admin.email}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
                   {getStatusBadge(admin.subscriptionStatus)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   {admin.subscriptionStatus === 'not_subscribed' || admin.subscriptionStatus === 'pending' ? (
                     <button
-                      onClick={() => handleSubscribe(admin.email)}
+                      onClick={() => handleSubscribe(admin)}
                       disabled={actionLoading === admin.email}
                       className="text-blue-600 hover:text-blue-900 disabled:opacity-50"
                     >

@@ -50,11 +50,13 @@ async function getAdminsWithSubscriptionStatus() {
 
     // Combinar datos
     const adminsWithStatus = admins.map(admin => {
-      const subscription = subscribedEmails.get(admin.email);
+      const emailForNotifications = admin.email_notification || admin.email;
+      const subscription = subscribedEmails.get(emailForNotifications);
       return {
         id: admin.id,
         name: admin.name,
         email: admin.email,
+        email_notification: emailForNotifications,
         subscribed: subscription ? true : false,
         subscriptionStatus: subscription ? subscription.status : 'not_subscribed',
         subscriptionArn: subscription ? subscription.arn : null

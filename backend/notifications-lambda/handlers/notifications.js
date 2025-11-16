@@ -160,13 +160,16 @@ module.exports.listSubscriptions = async (event) => {
  */
 module.exports.subscribeEmail = async (event) => {
   try {
-    const { email } = JSON.parse(event.body);
+    const { email, email_notification } = JSON.parse(event.body);
 
-    if (!email) {
-      return error(400, 'Campo requerido: email');
+    // Usar email_notification si está disponible, sino usar email
+    const emailToSubscribe = email_notification || email;
+
+    if (!emailToSubscribe) {
+      return error(400, 'Campo requerido: email o email_notification');
     }
 
-    const result = await subscribeEmailToTopic(email);
+    const result = await subscribeEmailToTopic(emailToSubscribe);
 
     if (result.alreadySubscribed) {
       return success(200, {
@@ -177,7 +180,8 @@ module.exports.subscribeEmail = async (event) => {
 
     return success(200, {
       message: 'Invitación enviada. El usuario debe confirmar desde su email.',
-      subscriptionArn: result.SubscriptionArn
+      subscriptionArn: result.SubscriptionArn,
+      subscribedEmail: emailToSubscribe
     });
   } catch (err) {
     console.error('Error al suscribir email:', err);

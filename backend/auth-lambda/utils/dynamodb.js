@@ -9,7 +9,7 @@ const docClient = DynamoDBDocumentClient.from(client);
 const USERS_TABLE = process.env.USERS_TABLE;
 
 // Crear usuario
-async function createUser({ email, passwordHash, name, role, code }) {
+async function createUser({ email, passwordHash, name, role, code, email_notification }) {
   const user = {
     id: randomUUID(),
     email,
@@ -17,6 +17,7 @@ async function createUser({ email, passwordHash, name, role, code }) {
     name,
     role,
     code,
+    email_notification: email_notification || email, // Por defecto, usar el mismo email
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };

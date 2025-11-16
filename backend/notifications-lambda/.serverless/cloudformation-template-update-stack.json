@@ -120,7 +120,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.create",
         "Runtime": "nodejs18.x",
@@ -148,7 +148,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.list",
         "Runtime": "nodejs18.x",
@@ -176,7 +176,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.markAsRead",
         "Runtime": "nodejs18.x",
@@ -204,7 +204,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.sendEmail",
         "Runtime": "nodejs18.x",
@@ -232,7 +232,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.listSubscriptions",
         "Runtime": "nodejs18.x",
@@ -260,7 +260,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.subscribeEmail",
         "Runtime": "nodejs18.x",
@@ -288,7 +288,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-notifications-service/dev/1763315827998-2025-11-16T17:57:07.998Z/alertautec-notifications-service.zip"
+          "S3Key": "serverless/alertautec-notifications-service/dev/1763318849484-2025-11-16T18:47:29.484Z/alertautec-notifications-service.zip"
         },
         "Handler": "handlers/notifications.unsubscribe",
         "Runtime": "nodejs18.x",
@@ -309,74 +309,74 @@
         "UnsubscribeEmailLogGroup"
       ]
     },
-    "CreateNotificationLambdaVersionHMVEfhEnCL09tUAUbcQJO39yH2Qq052Nw3TiOJfes": {
+    "CreateNotificationLambdaVersionteZGjRKSPqzKpOW9RGZGRWbGiN9NOtThEwDqC66Xw": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateNotificationLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
-    "ListNotificationsLambdaVersionidJifUIfc8ajncQhsRq3turVYVYSKtOzQvH4ECwvMnc": {
+    "ListNotificationsLambdaVersionCUDHul2CEi9jejw0CpJQlz0bf59hzIPKqe8gjbgFg": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ListNotificationsLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
-    "MarkAsReadLambdaVersion8t5LgbmiSSBbeZoRJsv1UMo2RfVxEmQoOlK9moNHcI": {
+    "MarkAsReadLambdaVersionndJdzdjAKklK5W4PWZlNrVnDHsBdbttnzbUGbn2XebA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "MarkAsReadLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
-    "SendEmailLambdaVersionvHuJ5YPZcLBrIJAZWeL0WIDPh9jnpya2lEKpO6il4s": {
+    "SendEmailLambdaVersionTpXCNJx1RbBsXai88Ux4yHATipHsoElcMQ56dMBOYo": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SendEmailLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
-    "ListSubscriptionsLambdaVersionXgwa4J4sLhHANxmGYYGXNtFF4jU0gFlamP5yzTHdE": {
+    "ListSubscriptionsLambdaVersionmyToCRGmHdp65VeR6hOfh2qiDuNJ7D87wXU787og": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ListSubscriptionsLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
-    "SubscribeEmailLambdaVersionMCnHGOSZZNQLg9O85f9idSQylbgPaJnViUkicB7L5Zw": {
+    "SubscribeEmailLambdaVersion0Zg4ms0NI0nkhh0JFuA7ZIc5fzhkJRPJKsEWezAfj40": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "SubscribeEmailLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
-    "UnsubscribeEmailLambdaVersionNjHD8HtcT7dC6wtWJitBxjgnwsf1OsjkNh0mNiSLg": {
+    "UnsubscribeEmailLambdaVersion4YqqzC1GGkoNtcQTcAroKuSpwId15jjFVTlbBD5A": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UnsubscribeEmailLambdaFunction"
         },
-        "CodeSha256": "iOuEiU43gaeUamuyIchs2BpZKvdC3TIkCgnONrZ6Yz4="
+        "CodeSha256": "s1n2nunSkJGE6YwQTtRPgM1QihodBMospabyGH+eSFA="
       }
     },
     "ApiGatewayRestApi": {
@@ -1139,7 +1139,7 @@
         "UnsubscribeEmailLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1763315821605": {
+    "ApiGatewayDeployment1763318842023": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -1488,7 +1488,7 @@
     "CreateNotificationLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateNotificationLambdaVersionHMVEfhEnCL09tUAUbcQJO39yH2Qq052Nw3TiOJfes"
+        "Ref": "CreateNotificationLambdaVersionteZGjRKSPqzKpOW9RGZGRWbGiN9NOtThEwDqC66Xw"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-CreateNotificationLambdaFunctionQualifiedArn"
@@ -1497,7 +1497,7 @@
     "ListNotificationsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ListNotificationsLambdaVersionidJifUIfc8ajncQhsRq3turVYVYSKtOzQvH4ECwvMnc"
+        "Ref": "ListNotificationsLambdaVersionCUDHul2CEi9jejw0CpJQlz0bf59hzIPKqe8gjbgFg"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-ListNotificationsLambdaFunctionQualifiedArn"
@@ -1506,7 +1506,7 @@
     "MarkAsReadLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "MarkAsReadLambdaVersion8t5LgbmiSSBbeZoRJsv1UMo2RfVxEmQoOlK9moNHcI"
+        "Ref": "MarkAsReadLambdaVersionndJdzdjAKklK5W4PWZlNrVnDHsBdbttnzbUGbn2XebA"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-MarkAsReadLambdaFunctionQualifiedArn"
@@ -1515,7 +1515,7 @@
     "SendEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SendEmailLambdaVersionvHuJ5YPZcLBrIJAZWeL0WIDPh9jnpya2lEKpO6il4s"
+        "Ref": "SendEmailLambdaVersionTpXCNJx1RbBsXai88Ux4yHATipHsoElcMQ56dMBOYo"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-SendEmailLambdaFunctionQualifiedArn"
@@ -1524,7 +1524,7 @@
     "ListSubscriptionsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ListSubscriptionsLambdaVersionXgwa4J4sLhHANxmGYYGXNtFF4jU0gFlamP5yzTHdE"
+        "Ref": "ListSubscriptionsLambdaVersionmyToCRGmHdp65VeR6hOfh2qiDuNJ7D87wXU787og"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-ListSubscriptionsLambdaFunctionQualifiedArn"
@@ -1533,7 +1533,7 @@
     "SubscribeEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "SubscribeEmailLambdaVersionMCnHGOSZZNQLg9O85f9idSQylbgPaJnViUkicB7L5Zw"
+        "Ref": "SubscribeEmailLambdaVersion0Zg4ms0NI0nkhh0JFuA7ZIc5fzhkJRPJKsEWezAfj40"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-SubscribeEmailLambdaFunctionQualifiedArn"
@@ -1542,7 +1542,7 @@
     "UnsubscribeEmailLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UnsubscribeEmailLambdaVersionNjHD8HtcT7dC6wtWJitBxjgnwsf1OsjkNh0mNiSLg"
+        "Ref": "UnsubscribeEmailLambdaVersion4YqqzC1GGkoNtcQTcAroKuSpwId15jjFVTlbBD5A"
       },
       "Export": {
         "Name": "sls-alertautec-notifications-service-dev-UnsubscribeEmailLambdaFunctionQualifiedArn"

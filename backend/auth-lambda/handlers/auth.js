@@ -10,7 +10,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 module.exports.register = async (event) => {
   try {
     const body = JSON.parse(event.body);
-    const { email, password, name, role, code, phoneNumber } = body;
+    const { email, password, name, role, code, phoneNumber, email_notification } = body;
 
     // Validación básica
     if (!email || !password || !name || !role) {
@@ -46,7 +46,8 @@ module.exports.register = async (event) => {
       name,
       role,
       code: code || null,
-      phoneNumber: phoneNumber || null
+      phoneNumber: phoneNumber || null,
+      email_notification: email_notification || email
     });
 
     // Generar JWT token
