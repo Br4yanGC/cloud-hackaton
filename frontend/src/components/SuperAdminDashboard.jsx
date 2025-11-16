@@ -404,8 +404,8 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
 
             <div className="space-y-4">
               <div>
-                <span className="font-semibold">Código de seguimiento:</span>
-                <p className="text-lg text-blue-600">{selectedIncident.trackingCode}</p>
+                <span className="font-semibold">ID:</span>
+                <p className="text-lg text-blue-600">{selectedIncident.id}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -418,18 +418,18 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
                   <p>{selectedIncident.location}</p>
                 </div>
                 <div>
-                  <span className="font-semibold">Estado:</span>
+                  <span className="font-semibold">Urgencia:</span>
                   <p>
-                    <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(selectedIncident.status)}`}>
-                      {selectedIncident.status}
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getUrgencyColor(selectedIncident.urgency)}`}>
+                      {urgencyLevels.find(u => u.value === selectedIncident.urgency)?.label}
                     </span>
                   </p>
                 </div>
                 <div>
-                  <span className="font-semibold">Urgencia:</span>
+                  <span className="font-semibold">Estado:</span>
                   <p>
-                    <span className={`px-2 py-1 rounded-full text-xs ${getUrgencyColor(selectedIncident.urgency)}`}>
-                      {selectedIncident.urgency}
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusData(selectedIncident.status)?.color}`}>
+                      {getStatusData(selectedIncident.status)?.icon} {getStatusData(selectedIncident.status)?.label}
                     </span>
                   </p>
                 </div>
@@ -446,7 +446,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               </div>
 
               <div>
-                <span className="font-semibold">Asignado a:</span>
+                <span className="font-semibold">Responsable:</span>
                 <p>{selectedIncident.assignedToName || 'Sin asignar'}</p>
               </div>
 
