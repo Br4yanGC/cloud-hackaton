@@ -1,7 +1,7 @@
 // Configuración de API
 export const API_CONFIG = {
-  BASE_URL: 'https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev',
-  INCIDENTS_URL: 'https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com/dev',
+  BASE_URL: import.meta.env.VITE_AUTH_API_URL || 'https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev',
+  INCIDENTS_URL: import.meta.env.VITE_INCIDENTS_API_URL || 'https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com/dev',
   ENDPOINTS: {
     REGISTER: '/auth/register',
     LOGIN: '/auth/login',
