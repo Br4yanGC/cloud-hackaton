@@ -10,7 +10,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 module.exports.register = async (event) => {
   try {
     const body = JSON.parse(event.body);
-    const { email, password, name, role, code } = body;
+    const { email, password, name, role, code, phoneNumber } = body;
 
     // Validación básica
     if (!email || !password || !name || !role) {
@@ -23,6 +23,11 @@ module.exports.register = async (event) => {
 
     if (password.length < 6) {
       return error(400, 'La contraseña debe tener al menos 6 caracteres');
+    }
+
+    // Validar formato de teléfono si se proporciona
+    if (phoneNumber && !phoneNumber.startsWith('+')) {
+      return error(400, 'El número de teléfono debe estar en formato E.164 (+51999999999)');
     }
 
     // Verificar si el email ya existe
@@ -40,7 +45,8 @@ module.exports.register = async (event) => {
       passwordHash,
       name,
       role,
-      code: code || null
+      code: code || null,
+      phoneNumber: phoneNumber || null
     });
 
     // Generar JWT token

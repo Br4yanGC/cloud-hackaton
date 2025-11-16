@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const { requireAuth } = require('../utils/auth');
 const { success, error } = require('../utils/response');
 const { notifyAdmins, notifyUser } = require('../utils/websocket');
+const { notifyIncidentAssignment } = require('../utils/notifications');
 const {
   createIncident,
   getIncidentById,
@@ -291,19 +292,26 @@ module.exports.assign = async (event) => {
 
     console.log('Incidente actualizado:', updatedIncident);
 
-    // Notificar a todos los admins sobre el cambio
+    // Notificar a todos los admins sobre el cambio (WebSocket)
     await notifyAdmins({
       type: 'INCIDENT_ASSIGNED',
       incident: updatedIncident,
       message: `Incidente ${updatedIncident.trackingCode} asignado a ${assignedToNameFinal}`
     });
 
-    // Notificar al estudiante que creó el incidente
+    // Notificar al estudiante que creó el incidente (WebSocket)
     await notifyUser(updatedIncident.createdBy, {
       type: 'INCIDENT_ASSIGNED',
       incident: updatedIncident,
       message: `Tu incidente ${updatedIncident.trackingCode} ha sido asignado a ${assignedToNameFinal}`
     });
+
+    // Enviar notificación in-app y SMS al admin asignado
+    await notifyIncidentAssignment(
+      assignedToId,
+      updatedIncident.id,
+      updatedIncident.description
+    );
 
     return success({
       message: 'Incidente asignado exitosamente',
