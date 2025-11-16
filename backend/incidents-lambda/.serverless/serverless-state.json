@@ -14,7 +14,8 @@
       },
       "environment": {
         "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-        "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+        "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+        "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
       },
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
@@ -139,7 +140,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.create",
               "Runtime": "nodejs18.x",
@@ -150,7 +151,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -166,7 +168,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.list",
               "Runtime": "nodejs18.x",
@@ -177,7 +179,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -193,7 +196,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.getById",
               "Runtime": "nodejs18.x",
@@ -204,7 +207,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -220,7 +224,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.update",
               "Runtime": "nodejs18.x",
@@ -231,7 +235,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -247,7 +252,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.assign",
               "Runtime": "nodejs18.x",
@@ -258,7 +263,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -274,7 +280,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.updateStatus",
               "Runtime": "nodejs18.x",
@@ -285,7 +291,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -301,7 +308,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z/alertautec-incidents.zip"
+                "S3Key": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z/alertautec-incidents.zip"
               },
               "Handler": "handlers/incidents.remove",
               "Runtime": "nodejs18.x",
@@ -312,7 +319,8 @@
               "Environment": {
                 "Variables": {
                   "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
-                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev"
+                  "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+                  "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
                 }
               },
               "Role": "arn:aws:iam::119327998857:role/LabRole"
@@ -321,80 +329,80 @@
               "DeleteIncidentLogGroup"
             ]
           },
-          "CreateIncidentLambdaVersionjOLOsoSGnzrqi2Ywzj6DhSlFMGeqPQvzeIMrtqySk": {
+          "CreateIncidentLambdaVersion5neTbS7nsVYrmSxFA0lxzfrG4fGvic9C0sWotcrj9Hs": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateIncidentLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Crear nuevo incidente"
             }
           },
-          "ListIncidentsLambdaVersionlwpOno484hJpid4K73DAwOgkwXMO6tKPbqfUNWoFU": {
+          "ListIncidentsLambdaVersionx8ri9d0535lzwAa3gSPYyF8cRkjBsyPjM187zV3GQ": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ListIncidentsLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Listar incidentes con filtros"
             }
           },
-          "GetIncidentLambdaVersionzybUlKwCWDMhZjTnlwSJE9p7FXNozwksHUrAT0zbkxk": {
+          "GetIncidentLambdaVersionrJYkt44iqpfmUXLMTwp2Hxt98IODzdV8L3hIAbtcC0A": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetIncidentLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Obtener detalles de un incidente"
             }
           },
-          "UpdateIncidentLambdaVersionD9CSdslDtzQJx7ZMyeZR6QH2X2gcr0LznONJpXLK0": {
+          "UpdateIncidentLambdaVersionhlZGA0rOzk7Byk32tSOQWOAuVgKwciRb0FX033JTCE": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateIncidentLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Actualizar incidente"
             }
           },
-          "AssignIncidentLambdaVersion1O0p4UKAEP4pWM0qFowxBBpZC7ZUd9VQbzDO8wKOw": {
+          "AssignIncidentLambdaVersionhEzJFgh5DObYLQfG6DMTjGbWRVwYgFqzXOkSQUUWE4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AssignIncidentLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Asignar incidente a administrador"
             }
           },
-          "UpdateStatusLambdaVersionopmjJRE5mf6sagiq0vJJQgDewD3DkzKt46PCd9mrf4Q": {
+          "UpdateStatusLambdaVersioncT6iqo2kAsDULm5vJSkoziEyk169QIaIvz4CAh3pHM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "UpdateStatusLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Cambiar estado del incidente"
             }
           },
-          "DeleteIncidentLambdaVersionr615V7KToCUmOLjDskmj4iqQeI3mh7yojlViZnvD0": {
+          "DeleteIncidentLambdaVersionPgdWOkf5JInE2IahbOXqzY2smDpSF90LwhPfxFmdz2c": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "DeleteIncidentLambdaFunction"
               },
-              "CodeSha256": "8V1Pun0+cH8dbri4zEztK8NnsS9P7+iIJ003ZjTwn9Y=",
+              "CodeSha256": "yiqMFzIiFZsJl7yQIQUcssV1ofjMbHtfA9SOSuGYfcY=",
               "Description": "Eliminar incidente"
             }
           },
@@ -971,7 +979,7 @@
               "DeleteIncidentLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1763271163253": {
+          "ApiGatewayDeployment1763275989707": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -1350,7 +1358,7 @@
           "CreateIncidentLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateIncidentLambdaVersionjOLOsoSGnzrqi2Ywzj6DhSlFMGeqPQvzeIMrtqySk"
+              "Ref": "CreateIncidentLambdaVersion5neTbS7nsVYrmSxFA0lxzfrG4fGvic9C0sWotcrj9Hs"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-CreateIncidentLambdaFunctionQualifiedArn"
@@ -1359,7 +1367,7 @@
           "ListIncidentsLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ListIncidentsLambdaVersionlwpOno484hJpid4K73DAwOgkwXMO6tKPbqfUNWoFU"
+              "Ref": "ListIncidentsLambdaVersionx8ri9d0535lzwAa3gSPYyF8cRkjBsyPjM187zV3GQ"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-ListIncidentsLambdaFunctionQualifiedArn"
@@ -1368,7 +1376,7 @@
           "GetIncidentLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetIncidentLambdaVersionzybUlKwCWDMhZjTnlwSJE9p7FXNozwksHUrAT0zbkxk"
+              "Ref": "GetIncidentLambdaVersionrJYkt44iqpfmUXLMTwp2Hxt98IODzdV8L3hIAbtcC0A"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-GetIncidentLambdaFunctionQualifiedArn"
@@ -1377,7 +1385,7 @@
           "UpdateIncidentLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateIncidentLambdaVersionD9CSdslDtzQJx7ZMyeZR6QH2X2gcr0LznONJpXLK0"
+              "Ref": "UpdateIncidentLambdaVersionhlZGA0rOzk7Byk32tSOQWOAuVgKwciRb0FX033JTCE"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-UpdateIncidentLambdaFunctionQualifiedArn"
@@ -1386,7 +1394,7 @@
           "AssignIncidentLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AssignIncidentLambdaVersion1O0p4UKAEP4pWM0qFowxBBpZC7ZUd9VQbzDO8wKOw"
+              "Ref": "AssignIncidentLambdaVersionhEzJFgh5DObYLQfG6DMTjGbWRVwYgFqzXOkSQUUWE4"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-AssignIncidentLambdaFunctionQualifiedArn"
@@ -1395,7 +1403,7 @@
           "UpdateStatusLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "UpdateStatusLambdaVersionopmjJRE5mf6sagiq0vJJQgDewD3DkzKt46PCd9mrf4Q"
+              "Ref": "UpdateStatusLambdaVersioncT6iqo2kAsDULm5vJSkoziEyk169QIaIvz4CAh3pHM"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-UpdateStatusLambdaFunctionQualifiedArn"
@@ -1404,7 +1412,7 @@
           "DeleteIncidentLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "DeleteIncidentLambdaVersionr615V7KToCUmOLjDskmj4iqQeI3mh7yojlViZnvD0"
+              "Ref": "DeleteIncidentLambdaVersionPgdWOkf5JInE2IahbOXqzY2smDpSF90LwhPfxFmdz2c"
             },
             "Export": {
               "Name": "sls-alertautec-incidents-dev-DeleteIncidentLambdaFunctionQualifiedArn"
@@ -1555,7 +1563,7 @@
         "memory": 256,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "CreateIncidentLambdaVersionjOLOsoSGnzrqi2Ywzj6DhSlFMGeqPQvzeIMrtqySk"
+        "versionLogicalId": "CreateIncidentLambdaVersion5neTbS7nsVYrmSxFA0lxzfrG4fGvic9C0sWotcrj9Hs"
       },
       "listIncidents": {
         "handler": "handlers/incidents.list",
@@ -1588,7 +1596,7 @@
         "memory": 256,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "ListIncidentsLambdaVersionlwpOno484hJpid4K73DAwOgkwXMO6tKPbqfUNWoFU"
+        "versionLogicalId": "ListIncidentsLambdaVersionx8ri9d0535lzwAa3gSPYyF8cRkjBsyPjM187zV3GQ"
       },
       "getIncident": {
         "handler": "handlers/incidents.getById",
@@ -1621,7 +1629,7 @@
         "memory": 128,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "GetIncidentLambdaVersionzybUlKwCWDMhZjTnlwSJE9p7FXNozwksHUrAT0zbkxk"
+        "versionLogicalId": "GetIncidentLambdaVersionrJYkt44iqpfmUXLMTwp2Hxt98IODzdV8L3hIAbtcC0A"
       },
       "updateIncident": {
         "handler": "handlers/incidents.update",
@@ -1654,7 +1662,7 @@
         "memory": 256,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "UpdateIncidentLambdaVersionD9CSdslDtzQJx7ZMyeZR6QH2X2gcr0LznONJpXLK0"
+        "versionLogicalId": "UpdateIncidentLambdaVersionhlZGA0rOzk7Byk32tSOQWOAuVgKwciRb0FX033JTCE"
       },
       "assignIncident": {
         "handler": "handlers/incidents.assign",
@@ -1687,7 +1695,7 @@
         "memory": 128,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "AssignIncidentLambdaVersion1O0p4UKAEP4pWM0qFowxBBpZC7ZUd9VQbzDO8wKOw"
+        "versionLogicalId": "AssignIncidentLambdaVersionhEzJFgh5DObYLQfG6DMTjGbWRVwYgFqzXOkSQUUWE4"
       },
       "updateStatus": {
         "handler": "handlers/incidents.updateStatus",
@@ -1720,7 +1728,7 @@
         "memory": 128,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "UpdateStatusLambdaVersionopmjJRE5mf6sagiq0vJJQgDewD3DkzKt46PCd9mrf4Q"
+        "versionLogicalId": "UpdateStatusLambdaVersioncT6iqo2kAsDULm5vJSkoziEyk169QIaIvz4CAh3pHM"
       },
       "deleteIncident": {
         "handler": "handlers/incidents.remove",
@@ -1753,7 +1761,7 @@
         "memory": 128,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "DeleteIncidentLambdaVersionr615V7KToCUmOLjDskmj4iqQeI3mh7yojlViZnvD0"
+        "versionLogicalId": "DeleteIncidentLambdaVersionPgdWOkf5JInE2IahbOXqzY2smDpSF90LwhPfxFmdz2c"
       }
     },
     "resources": {
@@ -1874,7 +1882,7 @@
         ],
         "artifactsS3KeyDirname": "serverless/alertautec-incidents/dev/code-artifacts",
         "artifact": "C:\\Users\\Asus_PC\\Documents\\Cloud Computing\\cloud-hackaton\\backend\\incidents-lambda\\.serverless\\alertautec-incidents.zip",
-        "artifactDirectoryName": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z"
+        "artifactDirectoryName": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z"
       }
     },
     "layers": {},
@@ -1882,7 +1890,7 @@
     "artifact": "C:\\Users\\Asus_PC\\Documents\\Cloud Computing\\cloud-hackaton\\backend\\incidents-lambda\\.serverless\\alertautec-incidents.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/alertautec-incidents/dev/1763271173719-2025-11-16T05:32:53.719Z",
+    "artifactDirectoryName": "serverless/alertautec-incidents/dev/1763276000530-2025-11-16T06:53:20.530Z",
     "artifact": "alertautec-incidents.zip"
   }
 }

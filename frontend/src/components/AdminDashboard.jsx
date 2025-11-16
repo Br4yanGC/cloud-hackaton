@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { incidentStatuses, urgencyLevels, incidentTypes, locations } from '../mockData';
 import { apiRequest, API_CONFIG } from '../config';
+import websocketManager from '../utils/websocket';
 import AdminLayout from './AdminLayout';
 
 function AdminDashboard({ currentAdmin, onLogout }) {
@@ -15,10 +16,58 @@ function AdminDashboard({ currentAdmin, onLogout }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  // Cargar incidentes
+  // Cargar incidentes y conectar WebSocket
   useEffect(() => {
     loadIncidents();
+
+    // Solicitar permisos de notificación
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // Conectar WebSocket
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      websocketManager.connect(user.id, user.role);
+
+      // Escuchar nuevos incidentes
+      const unsubscribeNewIncident = websocketManager.on('NEW_INCIDENT', (data) => {
+        console.log('🆕 Nuevo incidente recibido:', data);
+        // Agregar el nuevo incidente a la lista
+        setIncidents(prevIncidents => [data.incident, ...prevIncidents]);
+        // Mostrar notificación
+        showNotification('Nuevo incidente', data.message);
+      });
+
+      // Escuchar asignaciones
+      const unsubscribeAssigned = websocketManager.on('INCIDENT_ASSIGNED', (data) => {
+        console.log('👤 Incidente asignado:', data);
+        // Actualizar el incidente en la lista
+        setIncidents(prevIncidents =>
+          prevIncidents.map(inc =>
+            inc.id === data.incident.id ? data.incident : inc
+          )
+        );
+        showNotification('Incidente asignado', data.message);
+      });
+
+      // Cleanup al desmontar
+      return () => {
+        unsubscribeNewIncident();
+        unsubscribeAssigned();
+        websocketManager.disconnect();
+      };
+    }
   }, []);
+
+  const showNotification = (title, message) => {
+    // Notificación del navegador
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(title, { body: message });
+    }
+    // También puedes agregar un toast/alert en la UI
+    console.log(`📢 ${title}: ${message}`);
+  };
 
   const loadIncidents = async () => {
     try {

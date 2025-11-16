@@ -1,0 +1,606 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application",
+  "Resources": {
+    "ServerlessDeploymentBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ServerlessDeploymentBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "ServerlessDeploymentBucket"
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:*",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      },
+                      "/*"
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition"
+                      },
+                      ":s3:::",
+                      {
+                        "Ref": "ServerlessDeploymentBucket"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": false
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ConnectionHandlerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/alertautec-websocket-dev-connectionHandler"
+      }
+    },
+    "DisconnectionHandlerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/alertautec-websocket-dev-disconnectionHandler"
+      }
+    },
+    "MessageHandlerLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/alertautec-websocket-dev-messageHandler"
+      }
+    },
+    "BroadcastNotificationLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/alertautec-websocket-dev-broadcastNotification"
+      }
+    },
+    "ConnectionHandlerLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/alertautec-websocket/dev/1763275798543-2025-11-16T06:49:58.543Z/alertautec-websocket.zip"
+        },
+        "Handler": "handlers/websocket.connect",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "alertautec-websocket-dev-connectionHandler",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "CONNECTIONS_TABLE": "alertautec-websocket-connections-dev",
+            "WEBSOCKET_ENDPOINT": {
+              "Fn::Sub": "https://${WebsocketsApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+            }
+          }
+        },
+        "Role": "arn:aws:iam::119327998857:role/LabRole"
+      },
+      "DependsOn": [
+        "ConnectionHandlerLogGroup"
+      ]
+    },
+    "DisconnectionHandlerLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/alertautec-websocket/dev/1763275798543-2025-11-16T06:49:58.543Z/alertautec-websocket.zip"
+        },
+        "Handler": "handlers/websocket.disconnect",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "alertautec-websocket-dev-disconnectionHandler",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "CONNECTIONS_TABLE": "alertautec-websocket-connections-dev",
+            "WEBSOCKET_ENDPOINT": {
+              "Fn::Sub": "https://${WebsocketsApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+            }
+          }
+        },
+        "Role": "arn:aws:iam::119327998857:role/LabRole"
+      },
+      "DependsOn": [
+        "DisconnectionHandlerLogGroup"
+      ]
+    },
+    "MessageHandlerLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/alertautec-websocket/dev/1763275798543-2025-11-16T06:49:58.543Z/alertautec-websocket.zip"
+        },
+        "Handler": "handlers/websocket.message",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "alertautec-websocket-dev-messageHandler",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "CONNECTIONS_TABLE": "alertautec-websocket-connections-dev",
+            "WEBSOCKET_ENDPOINT": {
+              "Fn::Sub": "https://${WebsocketsApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+            }
+          }
+        },
+        "Role": "arn:aws:iam::119327998857:role/LabRole"
+      },
+      "DependsOn": [
+        "MessageHandlerLogGroup"
+      ]
+    },
+    "BroadcastNotificationLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/alertautec-websocket/dev/1763275798543-2025-11-16T06:49:58.543Z/alertautec-websocket.zip"
+        },
+        "Handler": "handlers/websocket.broadcast",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "alertautec-websocket-dev-broadcastNotification",
+        "MemorySize": 1024,
+        "Timeout": 6,
+        "Environment": {
+          "Variables": {
+            "CONNECTIONS_TABLE": "alertautec-websocket-connections-dev",
+            "WEBSOCKET_ENDPOINT": {
+              "Fn::Sub": "https://${WebsocketsApi}.execute-api.${AWS::Region}.amazonaws.com/dev"
+            }
+          }
+        },
+        "Role": "arn:aws:iam::119327998857:role/LabRole"
+      },
+      "DependsOn": [
+        "BroadcastNotificationLogGroup"
+      ]
+    },
+    "ConnectionHandlerLambdaVersionZQW86TFru2lXGrBVKhOcE3ElgotShga1zTPzQN8": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ConnectionHandlerLambdaFunction"
+        },
+        "CodeSha256": "QUr0ejtUF4/1Oxd6+hwcEMQZXipgh2CUCTkusrDfWcI="
+      }
+    },
+    "DisconnectionHandlerLambdaVersionFggxwlTKfHhH8Sm71JfvyhJmi4m0zRetY83Nw1LxpII": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DisconnectionHandlerLambdaFunction"
+        },
+        "CodeSha256": "QUr0ejtUF4/1Oxd6+hwcEMQZXipgh2CUCTkusrDfWcI="
+      }
+    },
+    "MessageHandlerLambdaVersiongBQXUnkbi9oJqWnC9OhovS1BQXEqRlketMT58G9Yo0": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "MessageHandlerLambdaFunction"
+        },
+        "CodeSha256": "QUr0ejtUF4/1Oxd6+hwcEMQZXipgh2CUCTkusrDfWcI="
+      }
+    },
+    "BroadcastNotificationLambdaVersionqH4YvRV4K1CL4qaAuVIRrd9eB6YX0lcjqEB4A5hnec": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "BroadcastNotificationLambdaFunction"
+        },
+        "CodeSha256": "QUr0ejtUF4/1Oxd6+hwcEMQZXipgh2CUCTkusrDfWcI="
+      }
+    },
+    "WebsocketsApi": {
+      "Type": "AWS::ApiGatewayV2::Api",
+      "Properties": {
+        "Name": "dev-alertautec-websocket-websockets",
+        "RouteSelectionExpression": "$request.body.action",
+        "Description": "Serverless Websockets",
+        "ProtocolType": "WEBSOCKET"
+      }
+    },
+    "ConnectionHandlerWebsocketsIntegration": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":apigateway:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "ConnectionHandlerLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "/invocations"
+            ]
+          ]
+        }
+      }
+    },
+    "DisconnectionHandlerWebsocketsIntegration": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":apigateway:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "DisconnectionHandlerLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "/invocations"
+            ]
+          ]
+        }
+      }
+    },
+    "MessageHandlerWebsocketsIntegration": {
+      "Type": "AWS::ApiGatewayV2::Integration",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "IntegrationType": "AWS_PROXY",
+        "IntegrationUri": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":apigateway:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":lambda:path/2015-03-31/functions/",
+              {
+                "Fn::GetAtt": [
+                  "MessageHandlerLambdaFunction",
+                  "Arn"
+                ]
+              },
+              "/invocations"
+            ]
+          ]
+        }
+      }
+    },
+    "ConnectionHandlerLambdaPermissionWebsockets": {
+      "Type": "AWS::Lambda::Permission",
+      "DependsOn": [
+        "WebsocketsApi",
+        "ConnectionHandlerLambdaFunction"
+      ],
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "ConnectionHandlerLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com"
+      }
+    },
+    "DisconnectionHandlerLambdaPermissionWebsockets": {
+      "Type": "AWS::Lambda::Permission",
+      "DependsOn": [
+        "WebsocketsApi",
+        "DisconnectionHandlerLambdaFunction"
+      ],
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "DisconnectionHandlerLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com"
+      }
+    },
+    "MessageHandlerLambdaPermissionWebsockets": {
+      "Type": "AWS::Lambda::Permission",
+      "DependsOn": [
+        "WebsocketsApi",
+        "MessageHandlerLambdaFunction"
+      ],
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "MessageHandlerLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com"
+      }
+    },
+    "SconnectWebsocketsRoute": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "RouteKey": "$connect",
+        "AuthorizationType": "NONE",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "ConnectionHandlerWebsocketsIntegration"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "SdisconnectWebsocketsRoute": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "RouteKey": "$disconnect",
+        "AuthorizationType": "NONE",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "DisconnectionHandlerWebsocketsIntegration"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "SdefaultWebsocketsRoute": {
+      "Type": "AWS::ApiGatewayV2::Route",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "RouteKey": "$default",
+        "AuthorizationType": "NONE",
+        "Target": {
+          "Fn::Join": [
+            "/",
+            [
+              "integrations",
+              {
+                "Ref": "MessageHandlerWebsocketsIntegration"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "WebsocketsDeploymentStage": {
+      "Type": "AWS::ApiGatewayV2::Stage",
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "StageName": "dev",
+        "Description": "Serverless Websockets",
+        "DeploymentId": {
+          "Ref": "WebsocketsDeployment3JndvVNHIbYQfXj9TTcwTSeCbEpr2nOV4zEEMmFq0"
+        }
+      }
+    },
+    "WebsocketsDeployment3JndvVNHIbYQfXj9TTcwTSeCbEpr2nOV4zEEMmFq0": {
+      "Type": "AWS::ApiGatewayV2::Deployment",
+      "DependsOn": [
+        "SconnectWebsocketsRoute",
+        "SdisconnectWebsocketsRoute",
+        "SdefaultWebsocketsRoute"
+      ],
+      "Properties": {
+        "ApiId": {
+          "Ref": "WebsocketsApi"
+        },
+        "Description": "Serverless Websockets"
+      }
+    },
+    "ConnectionsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "TableName": "alertautec-websocket-connections-dev",
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "connectionId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "connectionId",
+            "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "UserIdIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "ServerlessDeploymentBucketName": {
+      "Value": {
+        "Ref": "ServerlessDeploymentBucket"
+      },
+      "Export": {
+        "Name": "sls-alertautec-websocket-dev-ServerlessDeploymentBucketName"
+      }
+    },
+    "ConnectionHandlerLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "ConnectionHandlerLambdaVersionZQW86TFru2lXGrBVKhOcE3ElgotShga1zTPzQN8"
+      },
+      "Export": {
+        "Name": "sls-alertautec-websocket-dev-ConnectionHandlerLambdaFunctionQualifiedArn"
+      }
+    },
+    "DisconnectionHandlerLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "DisconnectionHandlerLambdaVersionFggxwlTKfHhH8Sm71JfvyhJmi4m0zRetY83Nw1LxpII"
+      },
+      "Export": {
+        "Name": "sls-alertautec-websocket-dev-DisconnectionHandlerLambdaFunctionQualifiedArn"
+      }
+    },
+    "MessageHandlerLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "MessageHandlerLambdaVersiongBQXUnkbi9oJqWnC9OhovS1BQXEqRlketMT58G9Yo0"
+      },
+      "Export": {
+        "Name": "sls-alertautec-websocket-dev-MessageHandlerLambdaFunctionQualifiedArn"
+      }
+    },
+    "BroadcastNotificationLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "BroadcastNotificationLambdaVersionqH4YvRV4K1CL4qaAuVIRrd9eB6YX0lcjqEB4A5hnec"
+      },
+      "Export": {
+        "Name": "sls-alertautec-websocket-dev-BroadcastNotificationLambdaFunctionQualifiedArn"
+      }
+    },
+    "ServiceEndpointWebsocket": {
+      "Description": "URL of the service endpoint",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "wss://",
+            {
+              "Ref": "WebsocketsApi"
+            },
+            ".execute-api.",
+            {
+              "Ref": "AWS::Region"
+            },
+            ".",
+            {
+              "Ref": "AWS::URLSuffix"
+            },
+            "/dev"
+          ]
+        ]
+      },
+      "Export": {
+        "Name": "sls-alertautec-websocket-dev-ServiceEndpointWebsocket"
+      }
+    }
+  }
+}

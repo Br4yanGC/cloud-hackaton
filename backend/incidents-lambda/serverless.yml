@@ -12,6 +12,7 @@ provider:
   environment:
     INCIDENTS_TABLE: ${self:service}-table-${self:provider.stage}
     AUTH_API_URL: https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev
+    WEBSOCKET_BROADCAST_FUNCTION: alertautec-websocket-dev-broadcastNotification
 
 functions:
   # Crear incidente (estudiante/admin)

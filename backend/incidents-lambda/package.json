@@ -13,9 +13,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.478.0",
+    "@aws-sdk/client-lambda": "^3.932.0",
     "@aws-sdk/lib-dynamodb": "^3.478.0",
-    "uuid": "^9.0.1",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "serverless": "^3.38.0"
