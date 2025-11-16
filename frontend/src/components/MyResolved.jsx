@@ -1,17 +1,81 @@
-import React, { useState } from 'react';
-import { mockIncidents, incidentStatuses, urgencyLevels } from '../mockData';
+import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { incidentStatuses, urgencyLevels } from '../mockData';
+import { apiRequest, API_CONFIG } from '../config';
+import websocketManager from '../utils/websocket';
 import AdminLayout from './AdminLayout';
 
 function MyResolved({ currentAdmin, onLogout }) {
-  // Filtrar solo los incidentes asignados a este admin que están resueltos o cerrados
-  const myResolvedIncidents = mockIncidents.filter(
-    incident => incident.assignedTo === currentAdmin.name && 
-    (incident.status === 'resuelto' || incident.status === 'cerrado')
-  );
-  
+  const [incidents, setIncidents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [filterStatus, setFilterStatus] = useState('all');
+
+  // Cargar incidentes resueltos y conectar WebSocket
+  useEffect(() => {
+    loadMyResolved();
+
+    // Conectar WebSocket
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    
+    if (user && user.id && user.role) {
+      websocketManager.connect(user.id, user.role);
+
+      // Escuchar cambios de estado
+      const unsubscribeStatus = websocketManager.on('INCIDENT_STATUS_UPDATED', (data) => {
+        console.log('🔄 [MyResolved] Estado actualizado:', data);
+        // Si pasó a resuelto o cerrado y es mío, agregarlo
+        if ((data.incident.status === 'resuelto' || data.incident.status === 'cerrado') &&
+            data.incident.assignedTo === user.id) {
+          setIncidents(prevIncidents => {
+            // Evitar duplicados
+            const exists = prevIncidents.some(inc => inc.id === data.incident.id);
+            if (exists) {
+              return prevIncidents.map(inc => 
+                inc.id === data.incident.id ? data.incident : inc
+              );
+            }
+            return [data.incident, ...prevIncidents];
+          });
+          toast.success('Incidente marcado como resuelto', { icon: '✅' });
+        }
+      });
+
+      return () => {
+        unsubscribeStatus();
+        websocketManager.disconnect();
+      };
+    }
+  }, []);
+
+  const loadMyResolved = async () => {
+    try {
+      setLoading(true);
+      const response = await apiRequest(API_CONFIG.ENDPOINTS.INCIDENTS, {
+        method: 'GET'
+      }, true);
+      
+      // Filtrar solo mis incidentes resueltos
+      const user = JSON.parse(localStorage.getItem('user'));
+      const myResolved = (response.incidents || []).filter(
+        incident => incident.assignedTo === user.id && 
+        (incident.status === 'resuelto' || incident.status === 'cerrado')
+      );
+      
+      setIncidents(myResolved);
+      setError('');
+    } catch (err) {
+      setError('Error al cargar incidentes resueltos');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const myResolvedIncidents = incidents;
 
   // Filtrar por estado
   const filteredIncidents = filterStatus === 'all' 

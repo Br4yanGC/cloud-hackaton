@@ -1,17 +1,96 @@
-import React, { useState } from 'react';
-import { mockIncidents, incidentStatuses, urgencyLevels } from '../mockData';
+import React, { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { incidentStatuses, urgencyLevels } from '../mockData';
+import { apiRequest, API_CONFIG } from '../config';
+import websocketManager from '../utils/websocket';
 import AdminLayout from './AdminLayout';
 
 function MyAssignments({ currentAdmin, onLogout }) {
-  // Filtrar solo los incidentes asignados a este admin que no estén resueltos ni cerrados
-  const myActiveIncidents = mockIncidents.filter(
-    incident => incident.assignedTo === currentAdmin.name && 
-    (incident.status === 'pendiente' || incident.status === 'en-proceso')
-  );
-  
+  const [incidents, setIncidents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
-  const [incidents, setIncidents] = useState(mockIncidents);
+
+  // Cargar incidentes asignados y conectar WebSocket
+  useEffect(() => {
+    loadMyAssignments();
+
+    // Conectar WebSocket
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    
+    if (user && user.id && user.role) {
+      websocketManager.connect(user.id, user.role);
+
+      // Escuchar asignaciones
+      const unsubscribeAssigned = websocketManager.on('INCIDENT_ASSIGNED', (data) => {
+        console.log('👤 [MyAssignments] Incidente asignado:', data);
+        // Si me lo asignaron a mí, agregarlo
+        if (data.incident.assignedTo === user.id && 
+            (data.incident.status === 'pendiente' || data.incident.status === 'en-proceso')) {
+          setIncidents(prevIncidents => {
+            // Evitar duplicados
+            const exists = prevIncidents.some(inc => inc.id === data.incident.id);
+            if (exists) {
+              return prevIncidents.map(inc => 
+                inc.id === data.incident.id ? data.incident : inc
+              );
+            }
+            return [data.incident, ...prevIncidents];
+          });
+          toast.success('Nuevo incidente asignado a ti', { icon: '📥' });
+        }
+      });
+
+      // Escuchar cambios de estado
+      const unsubscribeStatus = websocketManager.on('INCIDENT_STATUS_UPDATED', (data) => {
+        console.log('🔄 [MyAssignments] Estado actualizado:', data);
+        setIncidents(prevIncidents => {
+          // Si pasó a resuelto o cerrado, quitarlo de esta vista
+          if (data.incident.status === 'resuelto' || data.incident.status === 'cerrado') {
+            return prevIncidents.filter(inc => inc.id !== data.incident.id);
+          }
+          // Actualizar si sigue siendo activo
+          return prevIncidents.map(inc =>
+            inc.id === data.incident.id ? data.incident : inc
+          );
+        });
+      });
+
+      return () => {
+        unsubscribeAssigned();
+        unsubscribeStatus();
+        websocketManager.disconnect();
+      };
+    }
+  }, []);
+
+  const loadMyAssignments = async () => {
+    try {
+      setLoading(true);
+      const response = await apiRequest(API_CONFIG.ENDPOINTS.INCIDENTS, {
+        method: 'GET'
+      }, true);
+      
+      // Filtrar solo mis asignaciones activas
+      const user = JSON.parse(localStorage.getItem('user'));
+      const myActive = (response.incidents || []).filter(
+        incident => incident.assignedTo === user.id && 
+        (incident.status === 'pendiente' || incident.status === 'en-proceso')
+      );
+      
+      setIncidents(myActive);
+      setError('');
+    } catch (err) {
+      setError('Error al cargar asignaciones');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const myActiveIncidents = incidents;
 
   // Estadísticas
   const stats = {
