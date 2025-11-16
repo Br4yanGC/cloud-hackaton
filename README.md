@@ -2,12 +2,20 @@
 
 El proyecto consiste en un sistema serverless diseñado para reportar, monitorear y gestionar incidentes dentro del campus de UTEC. La solución integra un frontend web para que estudiantes y personal puedan registrar y visualizar reportes, junto con un backend basado en microservicios Lambda que maneja la creación de incidentes, autenticación de usuarios, envío de notificaciones y comunicación en tiempo real mediante WebSockets. Los datos se almacenan en DynamoDB, mientras que la orquestación de flujos programados y tareas batch se realiza con Apache Airflow desplegado en Fargate, asegurando escalabilidad y automatización. Toda la infraestructura se define con Infrastructure as Code (IaC), lo que permite portabilidad y despliegue reproducible en distintas cuentas AWS.
 
+# Integrantes
+- Brayan Gomero
+- Diego Rivadeneyra
+- Domenic Rincon
+- Eliseo Velasquez
+  
 ## 📁 Estructura del Proyecto
 
 ```
 cloud-hackaton/
 ├── README.md
-├── frontend/           # Aplicación React + Vite + TailwindCSS
+├── img/
+│   ├──diagrama-arquitectura.png 
+├── frontend/                        # Aplicación React + Vite + TailwindCSS
 │   ├── src/
 │   │   ├── components/
 │   │   │   ├── PublicView.jsx       # Vista pública de reportes
@@ -23,9 +31,14 @@ cloud-hackaton/
 └── backend/            
     ├── node_modules/               # Dependencias
     ├── notifications-lambda/       # Funcion Lambda
+        └── notifications.js
     ├── incidents-lambda/           # Funcion Lambda
+        └── incidents.js
     ├── auth-lambda/                # Funcion Lambda
+        ├── auth.js
+        └── seedUsers.js
     ├── websocket-lambda/           # Websocket
+        └── websocket.js
     ├── list-logs.js                # Script auxiliar para listar logs
     ├── package-lock.json           # Manejo de versiones
     └── package.json                # Definición de dependencias y scripts
@@ -84,6 +97,9 @@ cloud-hackaton/
 ## 🚀 Quick Start
 
 ```bash
+# Navegar al backend
+cd backend/
+
 # Navegar al frontend
 cd frontend
 
@@ -92,6 +108,7 @@ npm install
 
 # Ejecutar en desarrollo
 npm run dev
+
 ```
 
 La aplicación estará disponible en `http://localhost:3000`
@@ -122,6 +139,12 @@ La aplicación estará disponible en `http://localhost:3000`
 
 ## 🔐 Credenciales de Prueba
 
+**SuperAdministrador:**
+```
+Email: superadmin@utec.edu.pe
+Contraseña: superadmin123
+```
+
 **Administrador:**
 ```
 Email: admin@utec.edu.pe
@@ -137,7 +160,7 @@ Contraseña: estudiante123
 Usuarios adicionales disponibles en `frontend/src/mockData.js`
 
 ## 🏗️ Arquitectura de solucion (Serverless)
-
+![](img/diagrama-arquitectura.png)
 
 ## 🔌 APIs a Implementar
 
@@ -174,7 +197,7 @@ Ver documentación completa en `frontend/README.md`
 - Recibir código de seguimiento
 - Ver historial y estado de sus reportes
 
-### Trabajador
+### Administrador
 - Visualizar todos los incidentes del campus
 - Asignarse incidentes
 - Cambiar estados de incidentes
@@ -182,7 +205,7 @@ Ver documentación completa en `frontend/README.md`
 - Acceso a estadísticas globales
 - Ver información del estudiante que reportó cada incidente
   
-### Administrador
+### SuperAdministrador
 - Visualizar todos los incidentes del campus
 - Asignar incidentes
 - Ver historial completo de cada incidente
