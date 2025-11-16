@@ -196,8 +196,11 @@ module.exports.unsubscribe = async (event) => {
   try {
     const { subscriptionArn } = JSON.parse(event.body);
 
-    if (!subscriptionArn || subscriptionArn === 'PendingConfirmation') {
-      return error(400, 'SubscriptionArn inválido o pendiente');
+    // Validar que el ARN sea válido (debe empezar con "arn:aws:sns:")
+    if (!subscriptionArn || 
+        subscriptionArn === 'PendingConfirmation' || 
+        !subscriptionArn.startsWith('arn:aws:sns:')) {
+      return error(400, 'No se puede desuscribir: la suscripción está pendiente de confirmación o el ARN es inválido');
     }
 
     await unsubscribeEmail(subscriptionArn);
