@@ -349,11 +349,15 @@ Ver documentación completa en `frontend/README.md`
 
 ## 📝 Notas
 
-- El frontend está completamente funcional
-- Todos los puntos de integración con APIs están marcados en el código
-- La UI está diseñada para ser responsive
-- El servicio de SNS esta dirigido a los usuarios administradores, quienes recibiran un correo cada que se registre un incidente CRÍTICO para su pronta atención
-  - Los usuarios administradores se encuentran suscritos al tópico  alertautec-notifications-topic
+- El frontend está completamente funcional.
+- Todos los puntos de integración con APIs están marcados en el código.
+- La UI está diseñada para ser responsive.
+- Solo se puede asignar 1 admin por incidencia.
+- Cada que el SuperAdministrador asigna a un admin en algun incidente, este ultimo recibira una notificacion y all marcarla como leida se lle notificara al SuperAdmin que el admin ya lo vio.
+- Cada admin puede autoasignarse una incidencia para mayor agilidad en temas de respuesta de las mismas.
+- SuperAdministrador puede revisar el SNS para ver las personas subscritas (Personas que les llegara los mensajes por SMS o correo). Asimismo, puede añadir o eliminar personas.
+- El servicio de SNS esta dirigido a los usuarios administradores, quienes recibiran un correo cada que se registre un incidente CRÍTICO para su pronta atención.
+  - Los usuarios administradores se encuentran suscritos al tópico  alertautec-notifications-topic.
 
 ---
 
