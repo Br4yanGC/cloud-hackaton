@@ -225,19 +225,19 @@ module.exports.update = async (event) => {
 // Lambda: Asignar incidente a admin
 module.exports.assign = async (event) => {
   try {
-    // Verificar autenticación (solo admins)
+    // Verificar autenticación (admins o superadmins)
     const auth = await requireAuth(event);
     if (!auth.authenticated) {
       return error(401, auth.error);
     }
 
-    if (auth.user.role !== 'administrador') {
+    if (!['administrador', 'superadmin'].includes(auth.user.role)) {
       return error(403, 'Solo administradores pueden asignar incidentes');
     }
 
     const { id } = event.pathParameters;
     const body = JSON.parse(event.body);
-    const { assignTo } = body; // 'me' o ID de otro admin
+    const { assignTo, assignToAdminId, assignedToName } = body;
 
     const incident = await getIncidentById(id);
     if (!incident) {
@@ -245,25 +245,40 @@ module.exports.assign = async (event) => {
     }
 
     const now = new Date().toISOString();
-    const assignedToId = assignTo === 'me' ? auth.user.id : assignTo;
-    const assignedToName = assignTo === 'me' ? auth.user.name : body.assignedToName || 'Admin';
+    let assignedToId;
+    let assignedToNameFinal;
+
+    // Si es superadmin, debe proporcionar assignToAdminId
+    if (auth.user.role === 'superadmin') {
+      if (!assignToAdminId) {
+        return error(400, 'Superadmin debe especificar assignToAdminId');
+      }
+      assignedToId = assignToAdminId;
+      assignedToNameFinal = assignedToName || 'Admin';
+    } else {
+      // Si es admin regular, solo puede asignarse a sí mismo
+      assignedToId = assignTo === 'me' ? auth.user.id : assignTo;
+      assignedToNameFinal = assignTo === 'me' ? auth.user.name : assignedToName || 'Admin';
+    }
 
     console.log('Asignando incidente:', {
+      role: auth.user.role,
       assignTo,
+      assignToAdminId,
       assignedToId,
-      assignedToName,
+      assignedToNameFinal,
       authUser: auth.user
     });
 
     const updates = {
       assignedTo: assignedToId,
-      assignedToName,
+      assignedToName: assignedToNameFinal,
       status: 'en-proceso',
       updatedAt: now,
       history: [
         ...incident.history,
         {
-          action: `Asignado a ${assignedToName}`,
+          action: `Asignado a ${assignedToNameFinal}`,
           timestamp: now,
           user: auth.user.name
         }
@@ -280,14 +295,14 @@ module.exports.assign = async (event) => {
     await notifyAdmins({
       type: 'INCIDENT_ASSIGNED',
       incident: updatedIncident,
-      message: `Incidente ${updatedIncident.trackingCode} asignado a ${assignedToName}`
+      message: `Incidente ${updatedIncident.trackingCode} asignado a ${assignedToNameFinal}`
     });
 
     // Notificar al estudiante que creó el incidente
     await notifyUser(updatedIncident.createdBy, {
       type: 'INCIDENT_ASSIGNED',
       incident: updatedIncident,
-      message: `Tu incidente ${updatedIncident.trackingCode} ha sido asignado a ${assignedToName}`
+      message: `Tu incidente ${updatedIncident.trackingCode} ha sido asignado a ${assignedToNameFinal}`
     });
 
     return success({
@@ -404,6 +419,72 @@ module.exports.remove = async (event) => {
     });
   } catch (err) {
     console.error('Error al eliminar incidente:', err);
+    return error(500, 'Error interno del servidor', err.message);
+  }
+};
+
+// Lambda: Obtener administradores con carga de trabajo (superadmin)
+module.exports.getAdminsWorkload = async (event) => {
+  try {
+    // Verificar autenticación (solo superadmin)
+    const auth = await requireAuth(event);
+    if (!auth.authenticated) {
+      return error(401, auth.error);
+    }
+
+    if (auth.user.role !== 'superadmin') {
+      return error(403, 'Solo superadministradores pueden ver cargas de trabajo');
+    }
+
+    // Obtener lista de administradores desde auth-lambda
+    const authApiUrl = process.env.AUTH_API_URL;
+    const response = await fetch(`${authApiUrl}/auth/admins`, {
+      headers: {
+        'Authorization': event.headers.Authorization || event.headers.authorization
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Error al obtener lista de administradores');
+    }
+
+    const { admins } = await response.json();
+
+    // Obtener todos los incidentes activos (pendiente, en-proceso)
+    const activeIncidents = await listAllIncidents();
+    const activeStatuses = ['pendiente', 'en-proceso'];
+    const filteredIncidents = activeIncidents.filter(inc => activeStatuses.includes(inc.status));
+
+    // Contar incidentes por admin
+    const workloadMap = {};
+    
+    // Inicializar todos los admins con 0
+    admins.forEach(admin => {
+      workloadMap[admin.id] = {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        activeCount: 0
+      };
+    });
+
+    // Contar incidentes asignados
+    filteredIncidents.forEach(incident => {
+      if (incident.assignedTo && incident.assignedTo !== 'unassigned' && workloadMap[incident.assignedTo]) {
+        workloadMap[incident.assignedTo].activeCount++;
+      }
+    });
+
+    // Convertir a array y ordenar por carga (menor a mayor)
+    const workloadList = Object.values(workloadMap).sort((a, b) => a.activeCount - b.activeCount);
+
+    return success({
+      admins: workloadList,
+      totalAdmins: workloadList.length,
+      totalActiveIncidents: filteredIncidents.length
+    });
+  } catch (err) {
+    console.error('Error al obtener carga de trabajo:', err);
     return error(500, 'Error interno del servidor', err.message);
   }
 };

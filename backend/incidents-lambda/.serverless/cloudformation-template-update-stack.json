@@ -113,6 +113,12 @@
         "LogGroupName": "/aws/lambda/alertautec-incidents-dev-deleteIncident"
       }
     },
+    "GetAdminsWorkloadLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/alertautec-incidents-dev-getAdminsWorkload"
+      }
+    },
     "CreateIncidentLambdaFunction": {
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -120,7 +126,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.create",
         "Runtime": "nodejs18.x",
@@ -148,7 +154,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.list",
         "Runtime": "nodejs18.x",
@@ -176,7 +182,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.getById",
         "Runtime": "nodejs18.x",
@@ -204,7 +210,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.update",
         "Runtime": "nodejs18.x",
@@ -232,7 +238,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.assign",
         "Runtime": "nodejs18.x",
@@ -260,7 +266,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.updateStatus",
         "Runtime": "nodejs18.x",
@@ -288,7 +294,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/alertautec-incidents/dev/1763281445773-2025-11-16T08:24:05.773Z/alertautec-incidents.zip"
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
         },
         "Handler": "handlers/incidents.remove",
         "Runtime": "nodejs18.x",
@@ -309,81 +315,120 @@
         "DeleteIncidentLogGroup"
       ]
     },
-    "CreateIncidentLambdaVersiontzTCbpC76J0RrOX3CKlWMqMenZNzAIFFDlJkXUYdU": {
+    "GetAdminsWorkloadLambdaFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ServerlessDeploymentBucket"
+          },
+          "S3Key": "serverless/alertautec-incidents/dev/1763284393067-2025-11-16T09:13:13.067Z/alertautec-incidents.zip"
+        },
+        "Handler": "handlers/incidents.getAdminsWorkload",
+        "Runtime": "nodejs18.x",
+        "FunctionName": "alertautec-incidents-dev-getAdminsWorkload",
+        "MemorySize": 128,
+        "Timeout": 10,
+        "Description": "Obtener administradores con su carga de trabajo",
+        "Environment": {
+          "Variables": {
+            "INCIDENTS_TABLE": "alertautec-incidents-table-dev",
+            "AUTH_API_URL": "https://kzq2450gbk.execute-api.us-east-1.amazonaws.com/dev",
+            "WEBSOCKET_BROADCAST_FUNCTION": "alertautec-websocket-dev-broadcastNotification"
+          }
+        },
+        "Role": "arn:aws:iam::119327998857:role/LabRole"
+      },
+      "DependsOn": [
+        "GetAdminsWorkloadLogGroup"
+      ]
+    },
+    "CreateIncidentLambdaVersionjWm0SEBCvUHVs1v9ntEWFxUarSpwxJFaVkwubN892g": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "CreateIncidentLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Crear nuevo incidente"
       }
     },
-    "ListIncidentsLambdaVersionlZwPXg15JdqY0tvzmRsKFOQQzxHV22fnPHoI9k9eQjQ": {
+    "ListIncidentsLambdaVersion7roIF61BbLVnelJ4m9yQrOGeIlZv2ELNWbDsMww4k": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ListIncidentsLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Listar incidentes con filtros"
       }
     },
-    "GetIncidentLambdaVersion6Hx0w49nsooO9yxyUk4oT11llJWuUJEeGrm39KrR0": {
+    "GetIncidentLambdaVersion6liUUCxYVeorZAbSUZBPhEmJM7yqTfMChaeR2pW5n90": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "GetIncidentLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Obtener detalles de un incidente"
       }
     },
-    "UpdateIncidentLambdaVersionZ1EmAtukstWAGbgDGMrHn7qws0UJr3uoTk094ilnss": {
+    "UpdateIncidentLambdaVersiondoP7FxFYmDVBwFKbKOh5IWlbjBjr4zFfjHfUSWlwc": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UpdateIncidentLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Actualizar incidente"
       }
     },
-    "AssignIncidentLambdaVersionk0fDHxS4gonyS4HOq4WhcGMUmlrfbnix5Rmt6y8yo": {
+    "AssignIncidentLambdaVersiondMNYk03QR7jYr0uxPHYrj3vAKAc6ezLiBMfMCdNvzs": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "AssignIncidentLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Asignar incidente a administrador"
       }
     },
-    "UpdateStatusLambdaVersionXD9WtOY7NA65S2dqMXfM2reKNKTh2gSuyPW3PNk": {
+    "UpdateStatusLambdaVersionJjkspWMZ2ivyj1jT9x4qnOjPL0jH3ZKxb0CZC5hkH3Q": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "UpdateStatusLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Cambiar estado del incidente"
       }
     },
-    "DeleteIncidentLambdaVersionmhllXjVikmT9VEtqK2LKgVenhrQLCaoCNAydI5J27I": {
+    "DeleteIncidentLambdaVersionXCghlSPDb9yS15UfbTU8KTXR2q8639zDe6izw80oMY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "DeleteIncidentLambdaFunction"
         },
-        "CodeSha256": "U0IJYco3C0RHEr/f99AW5xLfpM2gUR3vk7XPKz8oBBQ=",
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
         "Description": "Eliminar incidente"
+      }
+    },
+    "GetAdminsWorkloadLambdaVersionT5OoieYV0iJUU8sbCM1z6dvbEqTsT8EXGra9afOCA": {
+      "Type": "AWS::Lambda::Version",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "GetAdminsWorkloadLambdaFunction"
+        },
+        "CodeSha256": "POJWRw+m73HllC3XoFKQ+gwOf5tULTLssDKepnfxehU=",
+        "Description": "Obtener administradores con su carga de trabajo"
       }
     },
     "ApiGatewayRestApi": {
@@ -444,6 +489,18 @@
           "Ref": "ApiGatewayResourceIncidentsIdVar"
         },
         "PathPart": "status",
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayResourceIncidentsAdminsDashworkload": {
+      "Type": "AWS::ApiGateway::Resource",
+      "Properties": {
+        "ParentId": {
+          "Ref": "ApiGatewayResourceIncidents"
+        },
+        "PathPart": "admins-workload",
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
         }
@@ -631,6 +688,53 @@
         },
         "ResourceId": {
           "Ref": "ApiGatewayResourceIncidentsIdVarStatus"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        }
+      }
+    },
+    "ApiGatewayMethodIncidentsAdminsDashworkloadOptions": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "AuthorizationType": "NONE",
+        "HttpMethod": "OPTIONS",
+        "MethodResponses": [
+          {
+            "StatusCode": "200",
+            "ResponseParameters": {
+              "method.response.header.Access-Control-Allow-Origin": true,
+              "method.response.header.Access-Control-Allow-Headers": true,
+              "method.response.header.Access-Control-Allow-Methods": true,
+              "method.response.header.Access-Control-Allow-Credentials": true
+            },
+            "ResponseModels": {}
+          }
+        ],
+        "RequestParameters": {},
+        "Integration": {
+          "Type": "MOCK",
+          "RequestTemplates": {
+            "application/json": "{statusCode:200}"
+          },
+          "ContentHandling": "CONVERT_TO_TEXT",
+          "IntegrationResponses": [
+            {
+              "StatusCode": "200",
+              "ResponseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'",
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,Authorization'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET'",
+                "method.response.header.Access-Control-Allow-Credentials": "'true'"
+              },
+              "ResponseTemplates": {
+                "application/json": ""
+              }
+            }
+          ]
+        },
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceIncidentsAdminsDashworkload"
         },
         "RestApiId": {
           "Ref": "ApiGatewayRestApi"
@@ -959,7 +1063,53 @@
         "DeleteIncidentLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1763281431247": {
+    "ApiGatewayMethodIncidentsAdminsDashworkloadGet": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "HttpMethod": "GET",
+        "RequestParameters": {},
+        "ResourceId": {
+          "Ref": "ApiGatewayResourceIncidentsAdminsDashworkload"
+        },
+        "RestApiId": {
+          "Ref": "ApiGatewayRestApi"
+        },
+        "ApiKeyRequired": false,
+        "AuthorizationType": "NONE",
+        "Integration": {
+          "IntegrationHttpMethod": "POST",
+          "Type": "AWS_PROXY",
+          "Uri": {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":apigateway:",
+                {
+                  "Ref": "AWS::Region"
+                },
+                ":lambda:path/2015-03-31/functions/",
+                {
+                  "Fn::GetAtt": [
+                    "GetAdminsWorkloadLambdaFunction",
+                    "Arn"
+                  ]
+                },
+                "/invocations"
+              ]
+            ]
+          }
+        },
+        "MethodResponses": []
+      },
+      "DependsOn": [
+        "GetAdminsWorkloadLambdaPermissionApiGateway"
+      ]
+    },
+    "ApiGatewayDeployment1763284378891": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -972,13 +1122,15 @@
         "ApiGatewayMethodIncidentsIdVarOptions",
         "ApiGatewayMethodIncidentsIdVarAssignOptions",
         "ApiGatewayMethodIncidentsIdVarStatusOptions",
+        "ApiGatewayMethodIncidentsAdminsDashworkloadOptions",
         "ApiGatewayMethodIncidentsPost",
         "ApiGatewayMethodIncidentsGet",
         "ApiGatewayMethodIncidentsIdVarGet",
         "ApiGatewayMethodIncidentsIdVarPut",
         "ApiGatewayMethodIncidentsIdVarAssignPut",
         "ApiGatewayMethodIncidentsIdVarStatusPut",
-        "ApiGatewayMethodIncidentsIdVarDelete"
+        "ApiGatewayMethodIncidentsIdVarDelete",
+        "ApiGatewayMethodIncidentsAdminsDashworkloadGet"
       ]
     },
     "CreateIncidentLambdaPermissionApiGateway": {
@@ -1240,6 +1392,43 @@
         }
       }
     },
+    "GetAdminsWorkloadLambdaPermissionApiGateway": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "FunctionName": {
+          "Fn::GetAtt": [
+            "GetAdminsWorkloadLambdaFunction",
+            "Arn"
+          ]
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":execute-api:",
+              {
+                "Ref": "AWS::Region"
+              },
+              ":",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":",
+              {
+                "Ref": "ApiGatewayRestApi"
+              },
+              "/*/*"
+            ]
+          ]
+        }
+      }
+    },
     "IncidentsTable": {
       "Type": "AWS::DynamoDB::Table",
       "Properties": {
@@ -1338,7 +1527,7 @@
     "CreateIncidentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "CreateIncidentLambdaVersiontzTCbpC76J0RrOX3CKlWMqMenZNzAIFFDlJkXUYdU"
+        "Ref": "CreateIncidentLambdaVersionjWm0SEBCvUHVs1v9ntEWFxUarSpwxJFaVkwubN892g"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-CreateIncidentLambdaFunctionQualifiedArn"
@@ -1347,7 +1536,7 @@
     "ListIncidentsLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ListIncidentsLambdaVersionlZwPXg15JdqY0tvzmRsKFOQQzxHV22fnPHoI9k9eQjQ"
+        "Ref": "ListIncidentsLambdaVersion7roIF61BbLVnelJ4m9yQrOGeIlZv2ELNWbDsMww4k"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-ListIncidentsLambdaFunctionQualifiedArn"
@@ -1356,7 +1545,7 @@
     "GetIncidentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "GetIncidentLambdaVersion6Hx0w49nsooO9yxyUk4oT11llJWuUJEeGrm39KrR0"
+        "Ref": "GetIncidentLambdaVersion6liUUCxYVeorZAbSUZBPhEmJM7yqTfMChaeR2pW5n90"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-GetIncidentLambdaFunctionQualifiedArn"
@@ -1365,7 +1554,7 @@
     "UpdateIncidentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UpdateIncidentLambdaVersionZ1EmAtukstWAGbgDGMrHn7qws0UJr3uoTk094ilnss"
+        "Ref": "UpdateIncidentLambdaVersiondoP7FxFYmDVBwFKbKOh5IWlbjBjr4zFfjHfUSWlwc"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-UpdateIncidentLambdaFunctionQualifiedArn"
@@ -1374,7 +1563,7 @@
     "AssignIncidentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "AssignIncidentLambdaVersionk0fDHxS4gonyS4HOq4WhcGMUmlrfbnix5Rmt6y8yo"
+        "Ref": "AssignIncidentLambdaVersiondMNYk03QR7jYr0uxPHYrj3vAKAc6ezLiBMfMCdNvzs"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-AssignIncidentLambdaFunctionQualifiedArn"
@@ -1383,7 +1572,7 @@
     "UpdateStatusLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "UpdateStatusLambdaVersionXD9WtOY7NA65S2dqMXfM2reKNKTh2gSuyPW3PNk"
+        "Ref": "UpdateStatusLambdaVersionJjkspWMZ2ivyj1jT9x4qnOjPL0jH3ZKxb0CZC5hkH3Q"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-UpdateStatusLambdaFunctionQualifiedArn"
@@ -1392,10 +1581,19 @@
     "DeleteIncidentLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "DeleteIncidentLambdaVersionmhllXjVikmT9VEtqK2LKgVenhrQLCaoCNAydI5J27I"
+        "Ref": "DeleteIncidentLambdaVersionXCghlSPDb9yS15UfbTU8KTXR2q8639zDe6izw80oMY"
       },
       "Export": {
         "Name": "sls-alertautec-incidents-dev-DeleteIncidentLambdaFunctionQualifiedArn"
+      }
+    },
+    "GetAdminsWorkloadLambdaFunctionQualifiedArn": {
+      "Description": "Current Lambda function version",
+      "Value": {
+        "Ref": "GetAdminsWorkloadLambdaVersionT5OoieYV0iJUU8sbCM1z6dvbEqTsT8EXGra9afOCA"
+      },
+      "Export": {
+        "Name": "sls-alertautec-incidents-dev-GetAdminsWorkloadLambdaFunctionQualifiedArn"
       }
     },
     "ServiceEndpoint": {

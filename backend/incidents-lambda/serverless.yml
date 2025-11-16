@@ -134,6 +134,23 @@ functions:
               - Authorization
             allowCredentials: true
 
+  # Obtener admins con carga de trabajo (superadmin)
+  getAdminsWorkload:
+    handler: handlers/incidents.getAdminsWorkload
+    description: Obtener administradores con su carga de trabajo
+    memorySize: 128
+    timeout: 10
+    events:
+      - http:
+          path: incidents/admins-workload
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+            allowCredentials: true
+
 # Recursos de infraestructura
 resources:
   Resources:

@@ -81,6 +81,21 @@ functions:
     timeout: 10
     memorySize: 128
 
+  listAdmins:
+    handler: handlers/auth.listAdmins
+    description: List all administrators (for superadmin)
+    events:
+      - http:
+          path: auth/admins
+          method: get
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - Authorization
+    timeout: 10
+    memorySize: 128
+
 # Recursos de AWS (DynamoDB)
 resources:
   Resources:

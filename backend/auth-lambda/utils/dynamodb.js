@@ -1,5 +1,5 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, PutCommand, GetCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient, PutCommand, GetCommand, QueryCommand, ScanCommand } = require('@aws-sdk/lib-dynamodb');
 const { randomUUID } = require('crypto');
 
 // Cliente DynamoDB
@@ -73,9 +73,27 @@ async function updateLastLogin(id) {
   await docClient.send(command);
 }
 
+// Listar todos los administradores
+async function listAdministrators() {
+  const command = new ScanCommand({
+    TableName: USERS_TABLE,
+    FilterExpression: '#role = :role',
+    ExpressionAttributeNames: {
+      '#role': 'role'
+    },
+    ExpressionAttributeValues: {
+      ':role': 'administrador'
+    }
+  });
+
+  const result = await docClient.send(command);
+  return result.Items || [];
+}
+
 module.exports = {
   createUser,
   getUser,
   getUserByEmail,
-  updateLastLogin
+  updateLastLogin,
+  listAdministrators
 };

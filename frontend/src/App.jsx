@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { Toaster } from 'react-hot-toast';
 import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
+import SuperAdminDashboard from './components/SuperAdminDashboard';
 import MyAssignments from './components/MyAssignments';
 import MyResolved from './components/MyResolved';
 import StudentDashboard from './components/StudentDashboard';
@@ -106,6 +107,8 @@ function App() {
             isAuthenticated ? (
               currentUser?.role === 'administrador' ? (
                 <Navigate to="/admin/dashboard" />
+              ) : currentUser?.role === 'superadmin' ? (
+                <Navigate to="/superadmin/dashboard" />
               ) : (
                 <Navigate to="/student/dashboard" />
               )
@@ -137,6 +140,16 @@ function App() {
           element={
             <ProtectedRoute allowedRole="administrador">
               <MyResolved currentAdmin={currentUser} onLogout={handleLogout} />
+            </ProtectedRoute>
+          } 
+        />
+
+        {/* Rutas de SuperAdmin */}
+        <Route 
+          path="/superadmin/dashboard" 
+          element={
+            <ProtectedRoute allowedRole="superadmin">
+              <SuperAdminDashboard currentAdmin={currentUser} onLogout={handleLogout} />
             </ProtectedRoute>
           } 
         />

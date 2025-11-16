@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { getUser, createUser, getUserByEmail } = require('../utils/dynamodb');
+const { getUser, createUser, getUserByEmail, listAdministrators } = require('../utils/dynamodb');
 const { success, error, validate } = require('../utils/response');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -17,8 +17,8 @@ module.exports.register = async (event) => {
       return error(400, 'Email, password, name y role son requeridos');
     }
 
-    if (!['estudiante', 'administrador'].includes(role)) {
-      return error(400, 'Role debe ser "estudiante" o "administrador"');
+    if (!['estudiante', 'administrador', 'superadmin'].includes(role)) {
+      return error(400, 'Role debe ser "estudiante", "administrador" o "superadmin"');
     }
 
     if (password.length < 6) {
@@ -203,5 +203,51 @@ module.exports.validateToken = async (event) => {
   } catch (err) {
     console.error('Validate token error:', err);
     return error(500, 'Error al validar token', err.message);
+  }
+};
+
+// Lambda: List all administrators (for superadmin)
+module.exports.listAdmins = async (event) => {
+  try {
+    // Verificar autenticación
+    const authHeader = event.headers?.Authorization || event.headers?.authorization;
+    if (!authHeader) {
+      return error(401, 'Token no proporcionado');
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    
+    // Verificar token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return error(403, 'Token inválido');
+    }
+
+    // Verificar que sea superadmin
+    if (decoded.role !== 'superadmin') {
+      return error(403, 'Solo superadmins pueden listar administradores');
+    }
+
+    // Obtener todos los administradores
+    const admins = await listAdministrators();
+
+    // Quitar información sensible
+    const safeAdmins = admins.map(admin => ({
+      id: admin.id,
+      name: admin.name,
+      email: admin.email,
+      createdAt: admin.createdAt
+    }));
+
+    return success({
+      admins: safeAdmins,
+      total: safeAdmins.length
+    });
+
+  } catch (err) {
+    console.error('List admins error:', err);
+    return error(500, 'Error al listar administradores', err.message);
   }
 };
