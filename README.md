@@ -26,15 +26,55 @@ cloud-hackaton/
     └── infrastructure/ # IaC (Terraform/CloudFormation)
 ```
 
-## 🎯 Objetivos del Proyecto
+## 🎯 Requerimientos del Proyecto
 
-- ✅ **Fase 1**: Frontend estático con data mock (COMPLETADO)
-- 🔄 **Fase 2**: Diseño de arquitectura serverless
-- 🔄 **Fase 3**: Implementación de microservicios
-- 🔄 **Fase 4**: Integración con AWS (Lambda, DynamoDB, S3)
-- 🔄 **Fase 5**: WebSockets para tiempo real
-- 🔄 **Fase 6**: Orquestación con Airflow
-- 🔄 **Fase 7**: Análisis predictivo con SageMaker
+## 1. Registro y Autenticación de Usuarios
+
+- ✔️ El sistema debe permitir registro e inicio de sesión mediante credenciales institucionales
+- ✔️ Se debe distinguir entre roles: estudiante, personal administrativo y autoridad
+
+## 2. Reporte de Incidentes
+
+- ✔️ Los usuarios deben poder crear reportes indicando tipo, ubicación, descripción y nivel de urgencia
+- ✔️ Cada incidente se almacena en una base de datos serverless (DynamoDB)
+- ✔️ Se genera automáticamente un identificador único por reporte
+
+## 3. Actualización y Seguimiento en Tiempo Real
+
+- ✔️ El sistema actualiza el estado de incidentes en tiempo real usando WebSockets
+- ✔️ Notificaciones instantáneas cuando un incidente cambia de estado
+- ✔️ Estados: pendiente, en atención, resuelto
+
+## 4. Panel Administrativo
+
+- ✔️ Visualizar un panel con todos los incidentes activos
+- ✔️ Permitir filtrar, priorizar y cerrar reportes
+- ✔️ Actualizaciones en tiempo real sin recargar la página
+
+## 5. Orquestación de Flujos con Apache Airflow
+
+- Clasificación automática de incidentes por tipo o urgencia
+- Envío de notificaciones a áreas responsables
+- Generación periódica de reportes estadísticos
+
+## 6. Gestión de Notificaciones
+
+- Alertas en tiempo real mediante WebSocket y notificaciones asíncronas (correo o SMS) según gravedad
+
+## 7. Historial y Trazabilidad
+
+- ✔️ Historial completo de acciones (creación, actualizaciones, responsables, fecha y hora)
+
+## 8. Escalabilidad y Resiliencia
+
+- ✔️ Componentes serverless y escalables automáticamente
+
+## 9. Análisis Predictivo y Visualización Inteligente (Opcional)
+
+- Integrar modelo de machine learning entrenado en AWS SageMaker
+- Identificar patrones, zonas de riesgo y tendencias de recurrencia
+- Predicciones sobre tipos de incidentes más probables en áreas y horarios específicos
+
 
 ## 🚀 Quick Start
 
@@ -91,33 +131,8 @@ Contraseña: estudiante123
 
 Usuarios adicionales disponibles en `frontend/src/mockData.js`
 
-## 🏗️ Arquitectura Futura (Serverless)
+## 🏗️ Arquitectura de solucion (Serverless)
 
-```
-┌─────────────────┐
-│   CloudFront    │  ← Distribución del frontend
-└────────┬────────┘
-         │
-┌────────▼────────┐
-│  S3/Amplify     │  ← Hosting del frontend
-└─────────────────┘
-         │
-┌────────▼────────┐
-│  API Gateway    │  ← REST API + WebSocket
-└────────┬────────┘
-         │
-    ┌────▼────┐
-    │  Lambda  │  ← Funciones serverless
-    └────┬────┘
-         │
-    ┌────▼────────────────────┐
-    │  DynamoDB  │  S3  │ SES  │  ← Servicios AWS
-    └──────────────────────────┘
-         │
-    ┌────▼────┐
-    │ Airflow  │  ← Orquestación de flujos
-    └─────────┘
-```
 
 ## 🔌 APIs a Implementar
 
@@ -144,9 +159,7 @@ Ver documentación completa en `frontend/README.md`
 - API Gateway (REST + WebSocket)
 - DynamoDB
 - S3
-- Cognito
 - Apache Airflow
-- AWS SageMaker (opcional)
 
 ## 👥 Roles de Usuario
 
@@ -156,24 +169,20 @@ Ver documentación completa en `frontend/README.md`
 - Recibir código de seguimiento
 - Ver historial y estado de sus reportes
 
-### Administrador
+### Trabajador
 - Visualizar todos los incidentes del campus
 - Asignarse incidentes
 - Cambiar estados de incidentes
 - Ver historial completo de cada incidente
 - Acceso a estadísticas globales
 - Ver información del estudiante que reportó cada incidente
-
-## 📈 Próximos Pasos
-
-1. **Diseñar arquitectura serverless detallada**
-2. **Crear funciones Lambda para CRUD de incidentes**
-3. **Configurar DynamoDB con diseño de tablas**
-4. **Implementar autenticación con Cognito**
-5. **Setup API Gateway con endpoints REST**
-6. **Implementar WebSocket para actualizaciones en tiempo real**
-7. **Configurar Airflow para automatizaciones**
-8. **Agregar análisis predictivo con SageMaker**
+  
+### Administrador
+- Visualizar todos los incidentes del campus
+- Asignar incidentes
+- Ver historial completo de cada incidente
+- Acceso a estadísticas globales
+- Ver información del estudiante que reportó cada incidente
 
 ## 📝 Notas
 
