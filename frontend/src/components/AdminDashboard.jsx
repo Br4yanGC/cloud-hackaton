@@ -236,7 +236,13 @@ function AdminDashboard({ currentAdmin, onLogout }) {
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                          {incident.assignedTo || (
+                          {incident.assignedToName || incident.assignedTo === 'unassigned' ? (
+                            incident.assignedToName ? (
+                              <span className="text-gray-900 font-medium">{incident.assignedToName}</span>
+                            ) : (
+                              <span className="text-gray-400 italic">Sin asignar</span>
+                            )
+                          ) : (
                             <span className="text-gray-400 italic">Sin asignar</span>
                           )}
                         </td>
@@ -247,12 +253,12 @@ function AdminDashboard({ currentAdmin, onLogout }) {
                           >
                             Ver
                           </button>
-                          {!incident.assignedTo && (
+                          {(incident.assignedTo === 'unassigned' || !incident.assignedTo) && (
                             <button
                               onClick={() => handleAssignToMe(incident.id)}
-                              className="text-green-600 hover:text-green-800 font-medium"
+                              className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded-md hover:bg-green-700 transition-colors"
                             >
-                              Asignarme
+                              Tomar responsabilidad
                             </button>
                           )}
                         </td>
@@ -317,7 +323,11 @@ function AdminDashboard({ currentAdmin, onLogout }) {
                 <div>
                   <label className="text-sm font-semibold text-gray-600">Responsable</label>
                   <p className="text-gray-900">
-                    {selectedIncident.assignedTo || <span className="text-gray-400 italic">Sin asignar</span>}
+                    {selectedIncident.assignedToName || (selectedIncident.assignedTo === 'unassigned' || !selectedIncident.assignedTo) ? (
+                      selectedIncident.assignedToName || <span className="text-gray-400 italic">Sin asignar</span>
+                    ) : (
+                      selectedIncident.assignedTo
+                    )}
                   </p>
                 </div>
                 <div>
@@ -377,7 +387,7 @@ function AdminDashboard({ currentAdmin, onLogout }) {
 
             {/* Footer del Modal */}
             <div className="bg-gray-50 p-6 rounded-b-xl flex justify-end gap-3">
-              {!selectedIncident.assignedTo && (
+              {(selectedIncident.assignedTo === 'unassigned' || !selectedIncident.assignedTo) && (
                 <button
                   onClick={() => {
                     handleAssignToMe(selectedIncident.id);
@@ -385,7 +395,7 @@ function AdminDashboard({ currentAdmin, onLogout }) {
                   }}
                   className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
                 >
-                  Asignarme Este Incidente
+                  Tomar Responsabilidad
                 </button>
               )}
               <button
