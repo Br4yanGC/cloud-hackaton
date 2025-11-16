@@ -111,6 +111,12 @@ functions:
     timeout: 10
     memorySize: 128
 
+  seedUsers:
+    handler: handlers/seedUsers.handler
+    description: Seed default users on deployment
+    timeout: 30
+    memorySize: 256
+
 # Recursos de AWS (DynamoDB)
 resources:
   Resources:
@@ -140,6 +146,15 @@ resources:
             Value: ${self:provider.stage}
           - Key: Service
             Value: auth
+
+    # Custom Resource para seed de usuarios
+    SeedUsersCustomResource:
+      Type: Custom::SeedUsers
+      DependsOn: UsersTable
+      Properties:
+        ServiceToken: !GetAtt SeedUsersLambdaFunction.Arn
+        TableName: ${self:provider.environment.USERS_TABLE}
+        Timestamp: ${sls:instanceId}  # Fuerza actualización en cada deploy
 
   # Outputs para referencia
   Outputs:
