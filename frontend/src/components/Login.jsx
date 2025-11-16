@@ -47,6 +47,8 @@ function Login({ onLogin }) {
       // Redirigir según el rol
       if (user.role === 'administrador') {
         navigate('/admin/dashboard');
+      } else if (user.role === 'superadmin') {
+        navigate('/superadmin/dashboard');
       } else if (user.role === 'estudiante') {
         navigate('/student/dashboard');
       }
@@ -136,6 +138,12 @@ function Login({ onLogin }) {
 
           {/* Demo Credentials */}
           <div className="mt-6 space-y-3">
+            <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+              <p className="text-xs text-gray-600 mb-2 font-semibold">👑 Cuenta SuperAdministrador:</p>
+              <p className="text-xs text-gray-700"><strong>Email:</strong> superadmin@utec.edu.pe</p>
+              <p className="text-xs text-gray-700"><strong>Contraseña:</strong> superadmin123</p>
+            </div>
+            
             <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-xs text-gray-600 mb-2 font-semibold">👨‍💼 Cuenta Administrativa:</p>
               <p className="text-xs text-gray-700"><strong>Email:</strong> admin@utec.edu.pe</p>
