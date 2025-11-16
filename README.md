@@ -77,7 +77,7 @@ cloud-hackaton/
 
 ## 6. Gestión de Notificaciones
 
-- Alertas en tiempo real mediante WebSocket y notificaciones asíncronas (correo o SMS) según gravedad
+- ✔️ Alertas en tiempo real mediante WebSocket y notificaciones asíncronas (correo o SMS) según gravedad
 
 ## 7. Historial y Trazabilidad
 
