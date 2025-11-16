@@ -112,9 +112,38 @@ class WebSocketManager {
       console.error('❌ WebSocket no está conectado');
     }
   }
+
+  // Obtener estado de conexión
+  getConnectionState() {
+    if (!this.ws) return 'NO_CREATED';
+    switch (this.ws.readyState) {
+      case WebSocket.CONNECTING: return 'CONNECTING';
+      case WebSocket.OPEN: return 'OPEN';
+      case WebSocket.CLOSING: return 'CLOSING';
+      case WebSocket.CLOSED: return 'CLOSED';
+      default: return 'UNKNOWN';
+    }
+  }
+
+  // Información de debug
+  getDebugInfo() {
+    return {
+      url: WEBSOCKET_URL,
+      state: this.getConnectionState(),
+      reconnectAttempts: this.reconnectAttempts,
+      listeners: Array.from(this.listeners.keys())
+    };
+  }
 }
 
 // Instancia singleton
 const websocketManager = new WebSocketManager();
+
+// Log de debug en consola cuando se carga el módulo
+if (typeof window !== 'undefined') {
+  window.websocketManager = websocketManager;
+  console.log('🔧 WebSocket Manager disponible globalmente en window.websocketManager');
+  console.log('🔧 Debug info:', websocketManager.getDebugInfo());
+}
 
 export default websocketManager;
