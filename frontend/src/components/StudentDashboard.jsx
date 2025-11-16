@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { incidentStatuses, urgencyLevels } from '../mockData';
 import { apiRequest, API_CONFIG } from '../config';
 import websocketManager from '../utils/websocket';
@@ -34,6 +35,14 @@ function StudentDashboard({ currentUser, onLogout }) {
             inc.id === data.incident.id ? data.incident : inc
           )
         );
+        // Mostrar toast
+        toast.success(
+          `Tu incidente ${data.incident.trackingCode} fue asignado a ${data.incident.assignedToName}`,
+          {
+            icon: '👤',
+            duration: 5000,
+          }
+        );
       });
 
       // Escuchar cambios de estado
@@ -44,6 +53,26 @@ function StudentDashboard({ currentUser, onLogout }) {
           prevIncidents.map(inc =>
             inc.id === data.incident.id ? data.incident : inc
           )
+        );
+        // Mostrar toast con diferentes estilos según el estado
+        const statusMessages = {
+          'pendiente': { text: 'marcado como pendiente', icon: '⏳' },
+          'en-proceso': { text: 'está en proceso', icon: '🔄' },
+          'resuelto': { text: 'ha sido resuelto', icon: '✅' },
+          'cerrado': { text: 'ha sido cerrado', icon: '🔒' }
+        };
+        const statusInfo = statusMessages[data.incident.status] || { text: 'actualizado', icon: '📝' };
+        
+        toast(
+          `Tu incidente ${data.incident.trackingCode} ${statusInfo.text}`,
+          {
+            icon: statusInfo.icon,
+            duration: 5000,
+            style: data.incident.status === 'resuelto' ? {
+              background: '#10b981',
+              color: '#fff',
+            } : undefined,
+          }
         );
       });
 

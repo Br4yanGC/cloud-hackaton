@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { incidentStatuses, urgencyLevels, incidentTypes, locations } from '../mockData';
 import { apiRequest, API_CONFIG } from '../config';
 import websocketManager from '../utils/websocket';
@@ -41,7 +42,11 @@ function AdminDashboard({ currentAdmin, onLogout }) {
         console.log('🆕 Nuevo incidente recibido:', data);
         // Agregar el nuevo incidente a la lista
         setIncidents(prevIncidents => [data.incident, ...prevIncidents]);
-        // Mostrar notificación
+        // Mostrar toast
+        toast.success(`Nuevo incidente: ${data.incident.trackingCode}`, {
+          icon: '🚨',
+        });
+        // Notificación del navegador
         showNotification('Nuevo incidente', data.message);
       });
 
@@ -54,6 +59,11 @@ function AdminDashboard({ currentAdmin, onLogout }) {
             inc.id === data.incident.id ? data.incident : inc
           )
         );
+        // Mostrar toast
+        toast.info(`${data.incident.trackingCode} asignado`, {
+          icon: '👤',
+        });
+        // Notificación del navegador
         showNotification('Incidente asignado', data.message);
       });
 

@@ -8,9 +8,10 @@
     "remove": "serverless remove"
   },
   "dependencies": {
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.478.0",
     "@aws-sdk/client-dynamodb": "^3.478.0",
     "@aws-sdk/lib-dynamodb": "^3.478.0",
-    "@aws-sdk/client-apigatewaymanagementapi": "^3.478.0"
+    "react-hot-toast": "^2.6.0"
   },
   "devDependencies": {
     "serverless": "^3.38.0"
