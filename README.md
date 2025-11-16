@@ -122,14 +122,131 @@ serverless deploy
 - Endpoints: Login, Register, Profile, etc.
 - Tabla DynamoDB: `alertautec-auth-v2-users-dev`
 
-**⚠️ IMPORTANTE:** Copia la URL base del API Gateway (ej: `https://9wasgnx72c.execute-api.us-east-1.amazonaws.com/dev`)
+**⚠️ IMPORTANTE - Guarda estas URLs para después:**
+
+---
+
+### 3. Incidents Lambda (Gestión de Incidentes)
+
+```bash
+cd ../incidents-lambda
+npm install
+serverless deploy
+```
+
+**Salida esperada:**
+- Stack: `alertautec-incidents-service-dev`
+- Endpoints: CRUD incidentes, asignación, cambio de estado
+- Tabla DynamoDB: `alertautec-incidents-dev`
+- API Gateway URL: `https://xxxxxx.execute-api.us-east-1.amazonaws.com/dev`
+
+**⚠️ IMPORTANTE:** Copia esta URL de Incidents API
+
+---
+
+### 4. Notifications Lambda (Notificaciones)
+
+```bash
+cd ../notifications-lambda
+npm install
+serverless deploy
+```
+
+**Salida esperada:**
+- Stack: `alertautec-notifications-service-dev`
+- Endpoints: Email, subscripciones SNS, notificaciones in-app
+- Tabla DynamoDB: `alertautec-notifications-dev`
+- SNS Topic: `alertautec-notifications-topic`
+
+---
+
+### 5. WebSocket Lambda (Notificaciones en Tiempo Real)
+
+```bash
+cd ../websocket-lambda
+npm install
+serverless deploy
+```
+
+**Salida esperada:**
+- Stack: `alertautec-websocket-dev`
+- WebSocket API URL: `wss://xxxxxx.execute-api.us-east-1.amazonaws.com/dev`
+- Tabla DynamoDB: `alertautec-connections-dev`
+
+**⚠️ IMPORTANTE:** Copia la URL del WebSocket
+
+---
+
+Anota la URL base del API Gateway que aparece en la salida del deploy (ejemplo):
+```
+https://9wasgnx72c.execute-api.us-east-1.amazonaws.com/dev
+```
+
+**¿Dónde se usan estas URLs?**
+- **Desarrollo local**: NO es necesario, el código ya tiene URLs por defecto
+- **Despliegue en Amplify**: SÍ, debes configurar las variables de entorno con estas URLs (ver sección "Despliegue del Frontend")
 
 **Crear usuarios por defecto:**
 ```bash
 node create-users-quick.js
 ```
 
-La aplicación estará disponible en `http://localhost:3000`
+---
+
+## 🌐 Despliegue del Frontend
+
+### Opción A: Desarrollo Local
+
+**Para testing y desarrollo local:**
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`
+
+**Nota:** El código ya tiene URLs por defecto en `frontend/src/config.js`, NO necesitas modificar nada para desarrollo local.
+
+---
+
+### Opción B: Producción en AWS Amplify
+
+**1. Crear App en Amplify Console:**
+- Ve a AWS Amplify en la consola
+- Click "New app" → "Host web app"
+- Conecta con GitHub → Selecciona `Br4yanGC/cloud-hackaton`
+- Branch: `main`
+- Build settings se detectan automáticamente (Vite)
+
+**2. Configurar Variables de Entorno:**
+
+En Amplify Console → Environment variables, agrega las URLs que guardaste del deploy del backend:
+
+```
+VITE_API_URL = https://TU_AUTH_API_URL/dev
+VITE_INCIDENTS_API_URL = https://TU_INCIDENTS_API_URL/dev  
+VITE_WEBSOCKET_URL = wss://TU_WEBSOCKET_URL/dev
+```
+
+**Ejemplo con valores reales:**
+```
+VITE_API_URL = https://9wasgnx72c.execute-api.us-east-1.amazonaws.com/dev
+VITE_INCIDENTS_API_URL = https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com/dev
+VITE_WEBSOCKET_URL = wss://d0eo5tae8b.execute-api.us-east-1.amazonaws.com/dev
+```
+
+**3. Deploy:**
+- Click "Save and deploy"
+- Espera 3-5 minutos
+- Amplify te dará una URL: `https://main.xxxxxx.amplifyapp.com`
+
+**4. Redeploys Automáticos:**
+- Cada push a `main` en GitHub redespliega automáticamente
+- O manualmente: Amplify Console → "Redeploy this version"
+
+---
 
 ## 📱 Características Implementadas
 
