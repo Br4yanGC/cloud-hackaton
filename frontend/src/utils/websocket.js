@@ -2,6 +2,7 @@
 import { API_CONFIG } from '../config';
 
 const WEBSOCKET_URL = API_CONFIG.WEBSOCKET_URL;
+console.log('🔧 WebSocket Manager inicializado. URL:', WEBSOCKET_URL);
 
 class WebSocketManager {
   constructor() {
@@ -18,10 +19,20 @@ class WebSocketManager {
       return;
     }
 
+    if (!WEBSOCKET_URL) {
+      console.error('❌ WEBSOCKET_URL no está definida!');
+      return;
+    }
+
     const url = `${WEBSOCKET_URL}?userId=${userId}&role=${role}`;
     console.log('🔌 Conectando WebSocket:', url);
 
-    this.ws = new WebSocket(url);
+    try {
+      this.ws = new WebSocket(url);
+    } catch (error) {
+      console.error('❌ Error al crear WebSocket:', error);
+      return;
+    }
 
     this.ws.onopen = () => {
       console.log('✅ WebSocket conectado');

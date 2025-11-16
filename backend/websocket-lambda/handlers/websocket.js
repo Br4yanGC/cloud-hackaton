@@ -84,9 +84,15 @@ module.exports.message = async (event) => {
 
 // Handler: Broadcast de notificación a todos los clientes conectados
 module.exports.broadcast = async (event) => {
+  console.log('📢 Broadcast invocado. Event:', JSON.stringify(event));
+  
   const { message, targetRole, targetUserId } = JSON.parse(event.body);
+  
+  console.log('📢 Broadcast params:', { message, targetRole, targetUserId });
 
   const endpoint = process.env.WEBSOCKET_ENDPOINT;
+  console.log('📢 WebSocket endpoint:', endpoint);
+  
   const apiGateway = new ApiGatewayManagementApiClient({
     endpoint: endpoint
   });
@@ -108,6 +114,7 @@ module.exports.broadcast = async (event) => {
       connections = result.Items;
     } else if (targetRole) {
       // Enviar a todos de un rol específico
+      console.log('🔍 Buscando conexiones con rol:', targetRole);
       const result = await docClient.send(new ScanCommand({
         TableName: CONNECTIONS_TABLE,
         FilterExpression: 'userRole = :role',
@@ -116,6 +123,7 @@ module.exports.broadcast = async (event) => {
         }
       }));
       connections = result.Items;
+      console.log('🔍 Conexiones encontradas:', connections.length, connections);
     } else {
       // Enviar a todos
       const result = await docClient.send(new ScanCommand({

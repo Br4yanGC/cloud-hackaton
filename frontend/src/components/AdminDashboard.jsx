@@ -27,7 +27,9 @@ function AdminDashboard({ currentAdmin, onLogout }) {
 
     // Conectar WebSocket
     const user = JSON.parse(localStorage.getItem('user'));
+    console.log('👤 Usuario desde localStorage:', user);
     if (user) {
+      console.log('🔌 Iniciando conexión WebSocket para usuario:', user.id, 'role:', user.role);
       websocketManager.connect(user.id, user.role);
 
       // Escuchar nuevos incidentes
