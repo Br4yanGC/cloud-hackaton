@@ -214,10 +214,11 @@ Ver documentación completa en `frontend/README.md`
 
 ## 📝 Notas
 
-- El frontend está completamente funcional con data mock
-- Todos los puntos de integración con APIs están claramente marcados en el código
-- La UI está diseñada para ser responsive y accesible
-- Se recomienda revisar `frontend/README.md` para detalles técnicos completos
+- El frontend está completamente funcional
+- Todos los puntos de integración con APIs están marcados en el código
+- La UI está diseñada para ser responsive
+- El servicio de SNS esta dirigido a los usuarios administradores, quienes recibiran un correo cada que se registre un incidente CRÍTICO para su pronta atención
+  - Los usuarios administradores se encuentran suscritos al tópico  alertautec-notifications-topic
 
 ---
 
