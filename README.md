@@ -1,11 +1,12 @@
 # AlertaUTEC - Sistema de Gestión de Incidentes
 
-Sistema serverless para reportar, monitorear y gestionar incidentes dentro del campus de UTEC.
+El proyecto consiste en un sistema serverless diseñado para reportar, monitorear y gestionar incidentes dentro del campus de UTEC. La solución integra un frontend web para que estudiantes y personal puedan registrar y visualizar reportes, junto con un backend basado en microservicios Lambda que maneja la creación de incidentes, autenticación de usuarios, envío de notificaciones y comunicación en tiempo real mediante WebSockets. Los datos se almacenan en DynamoDB, mientras que la orquestación de flujos programados y tareas batch se realiza con Apache Airflow desplegado en Fargate, asegurando escalabilidad y automatización. Toda la infraestructura se define con Infrastructure as Code (IaC), lo que permite portabilidad y despliegue reproducible en distintas cuentas AWS.
 
 ## 📁 Estructura del Proyecto
 
 ```
 cloud-hackaton/
+├── README.md
 ├── frontend/           # Aplicación React + Vite + TailwindCSS
 │   ├── src/
 │   │   ├── components/
@@ -19,11 +20,15 @@ cloud-hackaton/
 │   ├── package.json
 │   └── README.md                    # Documentación del frontend
 │
-└── backend/            # (Por implementar - Microservicios serverless)
-    ├── api-gateway/    # Configuración API Gateway
-    ├── lambdas/        # Funciones Lambda
-    ├── airflow/        # DAGs de Apache Airflow
-    └── infrastructure/ # IaC (Terraform/CloudFormation)
+└── backend/            
+    ├── node_modules/               # Dependencias
+    ├── notifications-lambda/       # Funcion Lambda
+    ├── incidents-lambda/           # Funcion Lambda
+    ├── auth-lambda/                # Funcion Lambda
+    ├── websocket-lambda/           # Websocket
+    ├── list-logs.js                # Script auxiliar para listar logs
+    ├── package-lock.json           # Manejo de versiones
+    └── package.json                # Definición de dependencias y scripts
 ```
 
 ## 🎯 Requerimientos del Proyecto
