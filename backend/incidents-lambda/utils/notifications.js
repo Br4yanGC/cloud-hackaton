@@ -8,7 +8,6 @@ const dynamoClient = new DynamoDBClient({ region: 'us-east-1' });
 const dynamoDB = DynamoDBDocumentClient.from(dynamoClient);
 
 const NOTIFICATIONS_FUNCTION = 'alertautec-notifications-service-dev-createNotification';
-const EMAIL_FUNCTION = 'alertautec-notifications-service-dev-sendEmail';
 const USERS_TABLE = 'alertautec-auth-users-dev';
 
 /**
@@ -59,41 +58,6 @@ async function createInAppNotification(userId, title, message, type = 'info', me
 }
 
 /**
- * Enviar notificación por Email (SNS)
- */
-async function sendEmailNotification(adminEmail, adminName, incidentId, incidentDescription) {
-  try {
-    if (!adminEmail) {
-      console.log('No se proporcionó email, omitiendo notificación por email');
-      return null;
-    }
-
-    const payload = {
-      body: JSON.stringify({
-        email: adminEmail,
-        name: adminName,
-        incidentId,
-        incidentDescription
-      })
-    };
-
-    const command = new InvokeCommand({
-      FunctionName: EMAIL_FUNCTION,
-      Payload: JSON.stringify(payload)
-    });
-
-    const response = await lambdaClient.send(command);
-    const result = JSON.parse(new TextDecoder().decode(response.Payload));
-    console.log('✅ Email enviado:', result);
-    return result;
-  } catch (error) {
-    console.error('Error al enviar email:', error);
-    // No lanzamos el error para que no falle la asignación si el email falla
-    return null;
-  }
-}
-
-/**
  * Notificar asignación de incidente
  */
 async function notifyIncidentAssignment(adminId, incidentId, incidentDescription, urgency) {
@@ -124,19 +88,8 @@ async function notifyIncidentAssignment(adminId, incidentId, incidentDescription
       message: `Nueva notificación: Incidente ${incidentId} asignado`
     });
 
-    console.log(`✅ Notificación WebSocket enviada a ${admin.name}`);
-
-    // Enviar Email solo si el incidente es CRÍTICO
-    if (urgency === 'critica') {
-      console.log(`⚠️ Incidente CRÍTICO detectado - Enviando email a todos los admins suscritos`);
-      if (admin.email) {
-        await sendEmailNotification(admin.email, admin.name, incidentId, incidentDescription);
-      }
-    } else {
-      console.log(`ℹ️ Incidente con urgencia "${urgency}" - No se envía email (solo críticos)`);
-    }
-
-    console.log(`Notificaciones enviadas exitosamente`);
+    console.log(`✅ Notificaciones enviadas exitosamente (WebSocket + In-app)`);
+    console.log(`ℹ️ No se envía email de asignación (solo emails para incidentes críticos al momento de creación)`);
   } catch (error) {
     console.error('Error al enviar notificaciones:', error);
     // No lanzamos el error para que no falle la asignación
@@ -193,7 +146,6 @@ Universidad de Ingeniería y Tecnología
 
 module.exports = {
   createInAppNotification,
-  sendEmailNotification,
   notifyIncidentAssignment,
   sendCriticalIncidentEmail
 };
