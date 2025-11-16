@@ -12,15 +12,39 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(null);
 
+  // Verificar si hay sesión guardada al cargar la app
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    
+    if (token && userStr) {
+      try {
+        const userData = JSON.parse(userStr);
+        setIsAuthenticated(true);
+        setCurrentUser(userData);
+        console.log('✅ Sesión restaurada desde localStorage:', userData);
+      } catch (error) {
+        console.error('❌ Error al restaurar sesión:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+  }, []);
+
   const handleLogin = (userData) => {
     setIsAuthenticated(true);
     setCurrentUser(userData);
+    // Guardar usuario en localStorage
+    localStorage.setItem('user', JSON.stringify(userData));
+    console.log('✅ Usuario guardado en localStorage:', userData);
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    console.log('✅ Sesión cerrada, localStorage limpiado');
   };
 
   // Protección de rutas según rol
