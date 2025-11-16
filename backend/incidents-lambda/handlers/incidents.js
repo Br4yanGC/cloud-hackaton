@@ -74,6 +74,18 @@ module.exports.create = async (event) => {
       message: `Nuevo incidente creado: ${incident.trackingCode} - ${incident.type}`
     });
 
+    // Si el incidente es CRÍTICO, enviar email a todos los admins suscritos
+    if (urgency === 'critica') {
+      console.log(`⚠️ INCIDENTE CRÍTICO CREADO - Enviando emails a admins suscritos`);
+      try {
+        const { sendCriticalIncidentEmail } = require('../utils/notifications');
+        await sendCriticalIncidentEmail(incident.id, incident.trackingCode, incident.description, incident.type, incident.location);
+      } catch (emailError) {
+        console.error('Error enviando emails de incidente crítico:', emailError);
+        // No fallar la creación del incidente si falla el email
+      }
+    }
+
     return success({
       message: 'Incidente creado exitosamente',
       incident

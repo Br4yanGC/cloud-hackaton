@@ -143,8 +143,57 @@ async function notifyIncidentAssignment(adminId, incidentId, incidentDescription
   }
 }
 
+/**
+ * Enviar email cuando se crea un incidente crítico
+ */
+async function sendCriticalIncidentEmail(incidentId, trackingCode, description, type, location) {
+  try {
+    console.log(`📧 Enviando email por incidente crítico: ${trackingCode}`);
+    
+    const payload = {
+      body: JSON.stringify({
+        subject: `🚨 ALERTA: Incidente Crítico Registrado - ${trackingCode}`,
+        message: `
+ALERTA DE INCIDENTE CRÍTICO - AlertaUTEC
+═══════════════════════════════════════
+
+⚠️ Se ha registrado un incidente de URGENCIA CRÍTICA que requiere atención inmediata.
+
+📋 Código de Seguimiento: ${trackingCode}
+📂 Tipo: ${type}
+📍 Ubicación: ${location}
+📝 Descripción: ${description}
+
+Este incidente requiere respuesta prioritaria. Por favor, revisa y asigna un responsable lo antes posible.
+
+Accede a la plataforma:
+👉 https://main.d2w7yrgd5oyrky.amplifyapp.com/
+
+═══════════════════════════════════════
+Este es un correo automático de AlertaUTEC
+Universidad de Ingeniería y Tecnología
+        `.trim()
+      })
+    };
+
+    const command = new InvokeCommand({
+      FunctionName: EMAIL_FUNCTION,
+      Payload: JSON.stringify(payload)
+    });
+
+    const response = await lambdaClient.send(command);
+    const result = JSON.parse(new TextDecoder().decode(response.Payload));
+    console.log(`✅ Email crítico enviado:`, result);
+    return result;
+  } catch (error) {
+    console.error('Error al enviar email de incidente crítico:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   createInAppNotification,
   sendEmailNotification,
-  notifyIncidentAssignment
+  notifyIncidentAssignment,
+  sendCriticalIncidentEmail
 };
