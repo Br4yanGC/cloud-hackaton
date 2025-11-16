@@ -283,6 +283,13 @@ module.exports.assign = async (event) => {
       message: `Incidente ${updatedIncident.trackingCode} asignado a ${assignedToName}`
     });
 
+    // Notificar al estudiante que creó el incidente
+    await notifyUser(updatedIncident.createdBy, {
+      type: 'INCIDENT_ASSIGNED',
+      incident: updatedIncident,
+      message: `Tu incidente ${updatedIncident.trackingCode} ha sido asignado a ${assignedToName}`
+    });
+
     return success({
       message: 'Incidente asignado exitosamente',
       incident: updatedIncident
@@ -344,6 +351,20 @@ module.exports.updateStatus = async (event) => {
     }
 
     const updatedIncident = await updateIncident(id, updates);
+
+    // Notificar al estudiante que creó el incidente
+    await notifyUser(updatedIncident.createdBy, {
+      type: 'INCIDENT_STATUS_UPDATED',
+      incident: updatedIncident,
+      message: `El estado de tu incidente ${updatedIncident.trackingCode} cambió a ${newStatus}`
+    });
+
+    // También notificar a los admins
+    await notifyAdmins({
+      type: 'INCIDENT_STATUS_UPDATED',
+      incident: updatedIncident,
+      message: `Estado del incidente ${updatedIncident.trackingCode} actualizado a ${newStatus}`
+    });
 
     return success({
       message: 'Estado actualizado exitosamente',
