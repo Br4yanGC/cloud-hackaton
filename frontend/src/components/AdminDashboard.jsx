@@ -62,7 +62,9 @@ function AdminDashboard({ currentAdmin, onLogout }) {
   const handleAssignToMe = async (incidentId) => {
     try {
       setLoading(true);
-      await apiRequest(
+      setError(null);
+      
+      const response = await apiRequest(
         API_CONFIG.ENDPOINTS.ASSIGN_INCIDENT(incidentId),
         {
           method: 'PUT',
@@ -70,8 +72,18 @@ function AdminDashboard({ currentAdmin, onLogout }) {
         },
         true
       );
+      
+      console.log('Incidente asignado:', response);
+      
+      // Cerrar modal si está abierto
+      if (showDetailModal) {
+        closeDetailModal();
+      }
+      
+      // Recargar incidentes
       await loadIncidents();
     } catch (err) {
+      console.error('Error al asignar:', err);
       setError('Error al asignar incidente: ' + err.message);
     } finally {
       setLoading(false);
@@ -389,10 +401,7 @@ function AdminDashboard({ currentAdmin, onLogout }) {
             <div className="bg-gray-50 p-6 rounded-b-xl flex justify-end gap-3">
               {(selectedIncident.assignedTo === 'unassigned' || !selectedIncident.assignedTo) && (
                 <button
-                  onClick={() => {
-                    handleAssignToMe(selectedIncident.id);
-                    closeDetailModal();
-                  }}
+                  onClick={() => handleAssignToMe(selectedIncident.id)}
                   className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium"
                 >
                   Tomar Responsabilidad
