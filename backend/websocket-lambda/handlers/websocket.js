@@ -103,6 +103,7 @@ module.exports.broadcast = async (event) => {
     
     if (targetUserId) {
       // Enviar solo a un usuario específico
+      console.log('🔍 Buscando conexiones con userId:', targetUserId);
       const result = await docClient.send(new QueryCommand({
         TableName: CONNECTIONS_TABLE,
         IndexName: 'UserIdIndex',
@@ -112,6 +113,7 @@ module.exports.broadcast = async (event) => {
         }
       }));
       connections = result.Items;
+      console.log('🔍 Conexiones encontradas para userId:', connections.length, connections);
     } else if (targetRole) {
       // Enviar a todos de un rol específico
       console.log('🔍 Buscando conexiones con rol:', targetRole);

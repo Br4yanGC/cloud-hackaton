@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { incidentStatuses, urgencyLevels } from '../mockData';
 import { apiRequest, API_CONFIG } from '../config';
+import websocketManager from '../utils/websocket';
 
 function StudentDashboard({ currentUser, onLogout }) {
   const navigate = useNavigate();
@@ -12,9 +13,49 @@ function StudentDashboard({ currentUser, onLogout }) {
   const [selectedIncident, setSelectedIncident] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
 
-  // Cargar incidentes del estudiante
+  // Cargar incidentes del estudiante y conectar WebSocket
   useEffect(() => {
     loadMyIncidents();
+
+    // Conectar WebSocket
+    const userStr = localStorage.getItem('user');
+    const user = userStr ? JSON.parse(userStr) : null;
+    
+    if (user && user.id && user.role) {
+      console.log('🔌 [StudentDashboard] Conectando WebSocket para usuario:', user.id);
+      websocketManager.connect(user.id, user.role);
+
+      // Escuchar cuando un incidente es asignado
+      const unsubscribeAssigned = websocketManager.on('INCIDENT_ASSIGNED', (data) => {
+        console.log('👤 [StudentDashboard] Incidente asignado:', data);
+        // Actualizar el incidente en la lista
+        setMyIncidents(prevIncidents =>
+          prevIncidents.map(inc =>
+            inc.id === data.incident.id ? data.incident : inc
+          )
+        );
+      });
+
+      // Escuchar cambios de estado
+      const unsubscribeStatusUpdate = websocketManager.on('INCIDENT_STATUS_UPDATED', (data) => {
+        console.log('🔄 [StudentDashboard] Estado actualizado:', data);
+        // Actualizar el incidente en la lista
+        setMyIncidents(prevIncidents =>
+          prevIncidents.map(inc =>
+            inc.id === data.incident.id ? data.incident : inc
+          )
+        );
+      });
+
+      // Cleanup al desmontar
+      return () => {
+        unsubscribeAssigned();
+        unsubscribeStatusUpdate();
+        websocketManager.disconnect();
+      };
+    } else {
+      console.error('❌ [StudentDashboard] No se puede conectar WebSocket: usuario no válido');
+    }
   }, []);
 
   const loadMyIncidents = async () => {
