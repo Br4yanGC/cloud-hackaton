@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { incidentStatuses, urgencyLevels, incidentTypes, locations } from '../mockData';
 import { apiRequest, API_CONFIG } from '../config';
 import websocketManager from '../utils/websocket';
-import AdminLayout from './AdminLayout';
+import SuperAdminLayout from './SuperAdminLayout';
 
 function SuperAdminDashboard({ currentAdmin, onLogout }) {
   const navigate = useNavigate();
@@ -231,7 +231,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
   };
 
   return (
-    <AdminLayout currentAdmin={currentAdmin} onLogout={onLogout}>
+    <SuperAdminLayout currentAdmin={currentAdmin} onLogout={onLogout}>
       <div className="max-w-7xl mx-auto">
         <div className="bg-white shadow rounded-lg p-6">
           <div className="flex justify-between items-center mb-6">
@@ -374,10 +374,10 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
                         >
                           👁️ Ver
                         </button>
-                        {(incident.status === 'pendiente' || incident.assignedTo === 'unassigned') && (
+                        {(incident.status === 'pendiente' || incident.status === 'en-proceso') && (
                           <button
                             onClick={() => handleAssignClick(incident)}
-                            className="text-green-600 hover:text-green-900"
+                            className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 font-semibold"
                           >
                             👤 Asignar
                           </button>
@@ -563,7 +563,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
           </div>
         </div>
       )}
-    </AdminLayout>
+    </SuperAdminLayout>
   );
 }
 
