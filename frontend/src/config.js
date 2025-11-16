@@ -1,18 +1,18 @@
 // Configuración de API
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'https://9wasgnx72c.execute-api.us-east-1.amazonaws.com/dev',
-  INCIDENTS_URL: import.meta.env.VITE_INCIDENTS_API_URL || 'https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com/dev',
+  BASE_URL: import.meta.env.VITE_API_URL || 'https://9wasgnx72c.execute-api.us-east-1.amazonaws.com',
+  INCIDENTS_URL: import.meta.env.VITE_INCIDENTS_API_URL || 'https://yq7wbvxby7.execute-api.us-east-1.amazonaws.com',
   WEBSOCKET_URL: import.meta.env.VITE_WEBSOCKET_URL || 'wss://d0eo5tae8b.execute-api.us-east-1.amazonaws.com/dev',
   ENDPOINTS: {
-    REGISTER: '/auth/register',
-    LOGIN: '/auth/login',
-    PROFILE: '/auth/me',
-    VALIDATE: '/auth/validate',
+    REGISTER: '/dev/auth/register',
+    LOGIN: '/dev/auth/login',
+    PROFILE: '/dev/auth/me',
+    VALIDATE: '/dev/auth/validate',
     // Incidents
-    INCIDENTS: '/incidents',
-    INCIDENT_BY_ID: (id) => `/incidents/${id}`,
-    ASSIGN_INCIDENT: (id) => `/incidents/${id}/assign`,
-    UPDATE_STATUS: (id) => `/incidents/${id}/status`
+    INCIDENTS: '/dev/incidents',
+    INCIDENT_BY_ID: (id) => `/dev/incidents/${id}`,
+    ASSIGN_INCIDENT: (id) => `/dev/incidents/${id}/assign`,
+    UPDATE_STATUS: (id) => `/dev/incidents/${id}/status`
   }
 };
 
