@@ -200,22 +200,11 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
   });
 
   const getStatusData = (status) => {
-    const statusMap = {
-      'pendiente': { label: 'Pendiente', color: 'bg-yellow-100 text-yellow-800', icon: '🟡' },
-      'en-proceso': { label: 'En Proceso', color: 'bg-blue-100 text-blue-800', icon: '🔵' },
-      'resuelto': { label: 'Resuelto', color: 'bg-green-100 text-green-800', icon: '🟢' },
-      'cerrado': { label: 'Cerrado', color: 'bg-gray-100 text-gray-800', icon: '⚪' }
-    };
-    return statusMap[status] || { label: status, color: 'bg-gray-100 text-gray-800', icon: '⚪' };
+    return incidentStatuses.find(s => s.value === status);
   };
 
   const getUrgencyColor = (urgency) => {
-    const colors = {
-      'baja': 'bg-green-100 text-green-800',
-      'media': 'bg-yellow-100 text-yellow-800',
-      'alta': 'bg-red-100 text-red-800'
-    };
-    return colors[urgency] || 'bg-gray-100 text-gray-800';
+    return urgencyLevels.find(u => u.value === urgency)?.color || 'text-gray-600 bg-gray-100';
   };
 
   const formatDate = (dateString) => {
@@ -232,30 +221,20 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
 
   return (
     <SuperAdminLayout currentAdmin={currentAdmin} onLogout={onLogout}>
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white shadow rounded-lg p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Panel SuperAdministrador</h2>
-            <button
-              onClick={loadIncidents}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              🔄 Actualizar
-            </button>
-          </div>
-
-          {/* Filtros */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div>
+      <div className="container mx-auto px-4 py-8">
+        {/* Filtros y búsqueda */}
+        <div className="bg-white rounded-lg shadow p-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Buscar
               </label>
               <input
                 type="text"
-                placeholder="Código, descripción o ubicación..."
+                placeholder="ID, tipo, ubicación, descripción..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-utec-blue focus:border-transparent"
               />
             </div>
             <div>
@@ -265,7 +244,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-utec-blue focus:border-transparent"
               >
                 <option value="all">Todos</option>
                 {incidentStatuses.map(status => (
@@ -282,7 +261,7 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               <select
                 value={filterUrgency}
                 onChange={(e) => setFilterUrgency(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-utec-blue focus:border-transparent"
               >
                 <option value="all">Todas</option>
                 {urgencyLevels.map(level => (
@@ -293,23 +272,25 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
               </select>
             </div>
           </div>
+        </div>
 
-          {/* Lista de incidentes */}
-          {loading ? (
-            <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <p className="mt-2 text-gray-600">Cargando incidentes...</p>
-            </div>
-          ) : error ? (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-              {error}
-            </div>
-          ) : filteredIncidents.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              No se encontraron incidentes
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
+        {/* Tabla de incidentes */}
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p className="mt-2 text-gray-600">Cargando incidentes...</p>
+              </div>
+            ) : error ? (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            ) : filteredIncidents.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                No se encontraron incidentes
+              </div>
+            ) : (
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -400,8 +381,8 @@ function SuperAdminDashboard({ currentAdmin, onLogout }) {
                   )}
                 </tbody>
               </table>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
